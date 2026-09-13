@@ -141,3 +141,11 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Firebase 設定：值放在 GitHub repo secret FIREBASE_CONFIG，
+# 由 .github/workflows/deploy.yml 在部署時產生，不進 git。
+assets/firebase-config.js
+
+# 圖片原檔：網頁只用轉好的 webp
+assets/original/
+media/original/

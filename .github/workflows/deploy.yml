@@ -1,0 +1,59 @@
+# 部署到 GitHub Pages
+#
+# Firebase 設定不進版本庫。它存在 repo 的 secret FIREBASE_CONFIG，
+# 部署時才寫成 assets/firebase-config.js。
+#
+# 設定方式：repo → Settings → Secrets and variables → Actions → New repository secret
+#   Name:   FIREBASE_CONFIG
+#   Secret: {"apiKey":"...","authDomain":"...","databaseURL":"...","projectId":"...","appId":"..."}
+#
+# 另外要把 Settings → Pages → Source 改成「GitHub Actions」。
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 寫入 Firebase 設定
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: |
+          if [ -z "$FIREBASE_CONFIG" ]; then
+            echo "::warning::找不到 FIREBASE_CONFIG secret，網站會以本機模式部署，手機端不會同步。"
+            echo 'window.CDVC_CONFIG.firebase = null;' > assets/firebase-config.js
+          else
+            printf 'window.CDVC_CONFIG.firebase = %s;\n' "$FIREBASE_CONFIG" > assets/firebase-config.js
+            node --check assets/firebase-config.js
+            echo "已寫入 Firebase 設定。"
+          fi
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

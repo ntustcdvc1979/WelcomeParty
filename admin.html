@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>後臺｜台科大崇德志工社 相見歡</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FFFCF2">
+<link rel="icon" href="assets/logo1.webp">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right)
+            env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .wrap{width:100%;max-width:40rem;margin:0 auto;padding:1rem 1rem 4rem;}
+
+  .top{
+    display:flex;align-items:center;gap:.6rem;
+    padding:.4rem .2rem 1rem;
+    font-size:.9rem;font-weight:800;color:var(--ink-2);
+  }
+  .top img{width:2rem;height:auto;}
+  .top .net{margin-left:auto;}
+  .top .net.on{color:var(--green-dark);}
+  .top .net.off{color:var(--err);}
+
+  .card{
+    background:var(--card);
+    border:2px solid var(--line);
+    border-radius:1.2rem;
+    padding:1.1rem;
+    margin-bottom:1rem;
+    box-shadow:0 .3rem 0 rgba(51,51,51,.05);
+  }
+  .card > h2{
+    margin:0 0 .3rem;
+    font-size:1.1rem;font-weight:900;
+    display:flex;align-items:baseline;gap:.5rem;
+  }
+  .card > h2 small{font-size:.75rem;font-weight:700;color:var(--ink-2);}
+  .hint{margin:.2rem 0 .9rem;font-size:.85rem;color:var(--ink-2);line-height:1.6;}
+
+  .row{display:flex;flex-wrap:wrap;gap:.5rem;}
+  .row > *{flex:1 1 auto;}
+
+  button{
+    font:inherit;font-weight:800;cursor:pointer;
+    padding:.7rem 1rem;border-radius:.8rem;
+    border:2px solid var(--line);
+    background:#fff;color:inherit;
+  }
+  button:hover{border-color:var(--ink-2);}
+  button:active{transform:scale(.98);}
+  button.go{
+    border-color:transparent;color:#fff;
+    background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+  }
+  button.big{width:100%;padding:1rem;font-size:1.1rem;}
+  button.mini{padding:.35rem .6rem;font-size:.8rem;border-radius:.55rem;}
+  button.danger{color:var(--err);border-color:rgba(196,69,59,.35);}
+  button[disabled]{opacity:.45;cursor:not-allowed;transform:none;}
+
+  textarea,select,input{
+    width:100%;font:inherit;
+    padding:.7rem .8rem;
+    border:2px solid var(--line);border-radius:.8rem;
+    background:#FFFDF7;color:inherit;
+  }
+  textarea{min-height:8rem;resize:vertical;line-height:1.7;}
+  textarea:focus,select:focus,input:focus{outline:none;border-color:var(--orange);background:#fff;}
+
+  .now{
+    display:flex;align-items:center;gap:.6rem;
+    padding:.7rem .9rem;margin-bottom:.8rem;
+    border-radius:.8rem;
+    background:rgba(169,206,59,.16);
+    font-size:.95rem;font-weight:800;
+  }
+  .now span{margin-left:auto;font-size:.8rem;font-weight:700;color:var(--ink-2);}
+
+  .term{
+    display:flex;align-items:center;justify-content:center;
+    min-height:4.5rem;margin:.8rem 0;
+    padding:.8rem;border-radius:1rem;
+    background:#FFF8E6;border:2px solid var(--gold);
+    font-size:2.1rem;font-weight:900;text-align:center;
+    word-break:break-all;
+  }
+  .term.none{
+    border-style:dashed;border-color:var(--line);background:#FAF6EA;
+    font-size:.95rem;font-weight:800;color:var(--ink-2);
+  }
+
+  .chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem;}
+  .chips button{
+    flex:0 0 auto;
+    padding:.4rem .8rem;border-radius:999px;font-size:.9rem;
+  }
+  .chips button.on{
+    background:var(--gold);border-color:var(--orange-dark);color:#fff;
+  }
+  .chips .i{opacity:.55;margin-right:.3rem;font-style:normal;}
+
+  .won{
+    list-style:none;margin:.8rem 0 0;padding:0;
+    display:grid;gap:.35rem;
+    max-height:14rem;overflow:auto;
+  }
+  .won li{
+    display:flex;align-items:baseline;gap:.5rem;
+    padding:.45rem .7rem;border-radius:.6rem;
+    background:#FAF6EA;font-size:.92rem;
+  }
+  .won li b{font-weight:900;}
+  .won li small{margin-left:auto;color:var(--ink-2);}
+
+  .empty{font-size:.88rem;color:var(--ink-2);padding:.4rem 0;}
+  .count{font-size:.85rem;color:var(--ink-2);margin-top:.5rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <img src="assets/logo1.webp" alt="崇德志工社">
+    <span>相見歡 後臺</span>
+    <span class="net" id="netinfo">連線中…</span>
+  </div>
+
+  <!-- ---------- 遙控 ---------- -->
+  <div class="card">
+    <h2>🖥️ 投影幕遙控</h2>
+    <div class="now">
+      <span style="margin:0">現在在</span>
+      <b id="nowlabel" style="flex:1">—</b>
+      <span id="nowpos"></span>
+    </div>
+    <div class="row">
+      <button type="button" id="c-prev">← 上一頁</button>
+      <button type="button" class="go" id="c-next">下一頁 →</button>
+    </div>
+    <p class="hint" style="margin:.8rem 0 .4rem">跳到哪一頁</p>
+    <select id="c-goto"><option>（等投影幕上線）</option></select>
+  </div>
+
+  <!-- ---------- 三隻猴子 ---------- -->
+  <div class="card">
+    <h2>🙊 三隻猴子 <small>題目只會出現在比劃猴的手機</small></h2>
+
+    <div class="term none" id="m-now">還沒有題目</div>
+
+    <div class="row">
+      <button type="button" id="m-prev">← 上一題</button>
+      <button type="button" class="go" id="m-next">下一題 →</button>
+    </div>
+
+    <p class="hint" style="margin:.9rem 0 .3rem">點一題就直接跳過去</p>
+    <div class="chips" id="m-chips"></div>
+
+    <p class="hint" style="margin:1.1rem 0 .3rem">題庫（一行一題，改完要按套用）</p>
+    <textarea id="m-text" placeholder="太陽&#10;甜甜圈&#10;淨灘"></textarea>
+    <div class="row" style="margin-top:.6rem">
+      <button type="button" id="m-apply">套用題庫</button>
+      <button type="button" id="m-shuffle">打亂順序</button>
+    </div>
+  </div>
+
+  <!-- ---------- 抽獎 ---------- -->
+  <div class="card">
+    <h2>🎁 抽獎 <small>投影幕跑馬燈抽，抽到的自動從名單移除</small></h2>
+
+    <p class="hint" style="margin:0 0 .3rem">參加者名單（一行一個名字）。這裡永遠是完整名單，抽走的人只從投影幕的名單移除。</p>
+    <textarea id="l-names" placeholder="王小明&#10;李小華&#10;陳大文"></textarea>
+    <div class="row" style="margin-top:.6rem">
+      <button type="button" id="l-apply">套用名單</button>
+      <button type="button" class="danger" id="l-reset">重設抽獎</button>
+    </div>
+    <p class="count" id="l-count">名單裡還有 0 位</p>
+
+    <p class="hint" style="margin:1.1rem 0 .3rem">
+      獎項（一行一個，數量寫在名字後面，例如「頭獎 x1」；沒寫就是 1 個）</p>
+    <textarea id="l-prizes" style="min-height:6rem"
+      placeholder="頭獎 全聯禮券 x1&#10;二獎 手搖飲 x3&#10;參加獎 社徽貼紙 x10"></textarea>
+    <div class="row" style="margin-top:.6rem">
+      <button type="button" id="l-papply">套用獎項</button>
+    </div>
+
+    <p class="hint" style="margin:1.1rem 0 .3rem">現在要抽哪一個獎</p>
+    <div class="chips" id="l-chips"></div>
+
+    <button type="button" class="go big" id="l-draw" style="margin-top:1rem">🎲 開始抽獎</button>
+    <p class="hint" id="l-note" style="margin:.6rem 0 0">
+      投影幕要先翻到「★ 抽獎進行中」那一頁，按下去才會跑。</p>
+
+    <ul class="won" id="l-won"></ul>
+    <div class="row" style="margin-top:.6rem">
+      <button type="button" class="mini danger" id="l-clear">清空中獎紀錄</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="assets/settings.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/monkeys-data.js"></script>
+<script src="assets/net.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var NET = window.CDVC_NET;
+  var MONKEY = window.CDVC_MONKEYS;
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  /** Firebase 讀回來的陣列有時候會變成物件，統一攤成陣列 */
+  function list(v) {
+    if (!v) { return []; }
+    if (Array.isArray(v)) { return v.filter(function (x) { return x != null; }); }
+    return Object.keys(v).map(function (k) { return v[k]; }).filter(function (x) { return x != null; });
+  }
+
+  /** 多行文字 → 陣列，空行和前後空白都清掉 */
+  function lines(text) {
+    return String(text || "").split(/\r?\n/)
+      .map(function (s) { return s.trim(); })
+      .filter(function (s) { return s.length; });
+  }
+
+  var monkey = { terms: [], at: 0 };
+  var lottery = {};
+  var outline = [];
+  var state = null;
+
+  // 使用者一旦動過輸入框，就不要再被資料庫的內容蓋掉
+  var touched = { names: false, prizes: false, terms: false };
+
+  /* ============================================================
+     遙控
+     ============================================================ */
+
+  /**
+   * 指令的序號。投影幕靠它擋掉重播，所以每一筆都必須比上一筆大。
+   * 連按兩下會落在同一毫秒，光用 Date.now() 第二下就被當成重複吃掉了。
+   */
+  var seq = 0;
+  function nextSeq() {
+    seq = Math.max(Date.now(), seq + 1);
+    return seq;
+  }
+
+  function control(cmd, n) {
+    NET.set("control", { seq: nextSeq(), cmd: cmd, n: n === undefined ? null : n });
+  }
+
+  $("c-prev").addEventListener("click", function () { control("prev"); });
+  $("c-next").addEventListener("click", function () { control("next"); });
+  $("c-goto").addEventListener("change", function (e) {
+    if (e.target.value === "") { return; }
+    control("goto", +e.target.value);
+  });
+
+  function renderRemote() {
+    $("nowlabel").textContent = state ? state.label : "（投影幕還沒上線）";
+    $("nowpos").textContent = state ? (state.i + 1) + " / " + state.total : "";
+
+    var sel = $("c-goto");
+    if (!outline.length) { return; }
+    if (sel.options.length !== outline.length + 1) {
+      sel.innerHTML = '<option value="">— 選一頁 —</option>' +
+        outline.map(function (o, n) {
+          return '<option value="' + n + '">' + (n + 1) + "　" + esc(o.label) + "</option>";
+        }).join("");
+    }
+    sel.value = state ? String(state.i) : "";
+  }
+
+  /* ============================================================
+     三隻猴子
+     ============================================================ */
+  function terms() { return list(monkey.terms); }
+
+  function termAt() {
+    var t = terms();
+    if (!t.length) { return 0; }
+    return Math.min(Math.max(monkey.at || 0, 0), t.length - 1);
+  }
+
+  function setMonkey(patch) {
+    NET.update("monkey", patch);
+  }
+
+  function renderMonkey() {
+    var t = terms();
+    var at = termAt();
+
+    var now = $("m-now");
+    if (t.length) {
+      now.className = "term";
+      now.textContent = t[at];
+    } else {
+      now.className = "term none";
+      now.textContent = "題庫是空的，先在下面貼上題目再按「套用題庫」";
+    }
+
+    $("m-prev").disabled = !t.length || at <= 0;
+    $("m-next").disabled = !t.length || at >= t.length - 1;
+
+    $("m-chips").innerHTML = t.map(function (x, n) {
+      return '<button type="button" class="' + (n === at ? "on" : "") + '" data-term="' + n + '">' +
+        '<i class="i">' + (n + 1) + "</i>" + esc(x) + "</button>";
+    }).join("") || '<span class="empty">還沒有題目</span>';
+
+    if (!touched.terms) { $("m-text").value = t.join("\n"); }
+  }
+
+  /**
+   * 換題。先改本機再送出去，按鈕才會即時有反應——
+   * 不然連按兩下的時候，第二下讀到的還是資料庫回來之前的舊題號。
+   */
+  function goTerm(n) {
+    var t = terms();
+    if (!t.length) { return; }
+    monkey.at = Math.min(Math.max(n, 0), t.length - 1);
+    renderMonkey();
+    setMonkey({ at: monkey.at });
+  }
+
+  $("m-prev").addEventListener("click", function () { goTerm(termAt() - 1); });
+  $("m-next").addEventListener("click", function () { goTerm(termAt() + 1); });
+
+  $("m-chips").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-term]");
+    if (b) { goTerm(+b.dataset.term); }
+  });
+
+  $("m-text").addEventListener("input", function () { touched.terms = true; });
+
+  $("m-apply").addEventListener("click", function () {
+    var t = lines($("m-text").value);
+    if (!t.length) { return; }
+    touched.terms = false;
+    NET.set("monkey", { terms: t, at: 0 });
+  });
+
+  $("m-shuffle").addEventListener("click", function () {
+    var t = terms().slice();
+    for (var n = t.length - 1; n > 0; n--) {
+      var k = Math.floor(Math.random() * (n + 1));
+      var tmp = t[n]; t[n] = t[k]; t[k] = tmp;
+    }
+    touched.terms = false;
+    NET.set("monkey", { terms: t, at: 0 });
+  });
+
+  /* ============================================================
+     抽獎
+     ============================================================ */
+  function pool() { return list(lottery.pool); }        // 還沒被抽走的
+  function roster() { return list(lottery.roster); }    // 當初貼上來的完整名單
+  function prizes() { return list(lottery.prizes); }
+  function history() { return list(lottery.history); }
+
+  /** 「頭獎 全聯禮券 x3」→ { name:"頭獎 全聯禮券", count:3 } */
+  function parsePrize(line) {
+    var m = line.match(/^(.*?)[\s,，]*[x×*]\s*(\d+)$/i);
+    if (m && m[1].trim()) { return { name: m[1].trim(), count: +m[2] }; }
+    return { name: line, count: 1 };
+  }
+
+  function prizeText(p) {
+    return p.name + (p.count > 1 ? " x" + p.count : "");
+  }
+
+  function renderLottery() {
+    var names = pool();
+    var ps = prizes();
+    var won = history();
+    var at = Math.min(Math.max(lottery.prizeAt || 0, 0), Math.max(ps.length - 1, 0));
+
+    $("l-count").textContent = "名單裡還有 " + names.length + " 位"
+      + (won.length ? "，已抽出 " + won.length + " 位" : "");
+
+    // 輸入框放的是完整名單，不是抽剩的——不然抽過幾輪之後就沒辦法把人放回去了。
+    // 還沒存過 roster 的舊房間就先用現有名單頂著，至少不會開起來是空的。
+    var all = roster().length ? roster() : names;
+    if (!touched.names && all.length) { $("l-names").value = all.join("\n"); }
+    if (!touched.prizes && ps.length) { $("l-prizes").value = ps.map(prizeText).join("\n"); }
+
+    $("l-chips").innerHTML = ps.map(function (p, n) {
+      var got = won.filter(function (h) { return h.prize === p.name; }).length;
+      return '<button type="button" class="' + (n === at ? "on" : "") + '" data-prize="' + n + '">' +
+        esc(p.name) + "（" + got + "/" + (p.count || 1) + "）</button>";
+    }).join("") || '<span class="empty">還沒有獎項</span>';
+
+    // 抽滿了還是讓你抽（現場臨時加碼很常見），只是先提醒一聲
+    var p = ps[at];
+    var got = p ? won.filter(function (h) { return h.prize === p.name; }).length : 0;
+
+    $("l-draw").disabled = !names.length;
+    $("l-note").textContent =
+      !names.length ? "名單是空的，先套用名單。"
+      : (p && got >= (p.count || 1))
+        ? "「" + p.name + "」已經抽滿 " + got + " 位了，要不要換下一個獎？"
+        : "投影幕要先翻到「★ 抽獎進行中」那一頁，按下去才會跑。";
+
+    $("l-won").innerHTML = won.slice().reverse().map(function (h) {
+      return "<li><b>" + esc(h.name) + "</b><small>" + esc(h.prize || "") + "</small></li>";
+    }).join("");
+  }
+
+  $("l-names").addEventListener("input", function () { touched.names = true; });
+  $("l-prizes").addEventListener("input", function () { touched.prizes = true; });
+
+  /** 名單同時寫兩份：roster 是原始名單，pool 是還沒被抽走的 */
+  function applyNames() {
+    var names = lines($("l-names").value);
+    touched.names = false;
+    NET.set("lottery/roster", names);
+    NET.set("lottery/pool", names);
+    return names;
+  }
+
+  $("l-apply").addEventListener("click", applyNames);
+
+  $("l-papply").addEventListener("click", function () {
+    touched.prizes = false;
+    NET.set("lottery/prizes", lines($("l-prizes").value).map(parsePrize));
+    NET.set("lottery/prizeAt", 0);
+  });
+
+  $("l-chips").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-prize]");
+    if (b) { NET.set("lottery/prizeAt", +b.dataset.prize); }
+  });
+
+  $("l-draw").addEventListener("click", function () {
+    NET.set("lottery/draw", { seq: nextSeq() });
+  });
+
+  $("l-clear").addEventListener("click", function () {
+    if (!confirm("清空中獎紀錄？名單不會變。")) { return; }
+    NET.remove("lottery/history");
+  });
+
+  $("l-reset").addEventListener("click", function () {
+    if (!confirm("重設抽獎：所有人放回名單，中獎紀錄全部清掉。確定？")) { return; }
+    applyNames();
+    NET.remove("lottery/history");
+  });
+
+  /* ============================================================
+     連線
+     ============================================================ */
+  NET.onStatus = function (ok) {
+    var el = $("netinfo");
+    el.textContent = ok ? "● 已連線" : "● 連線中斷";
+    el.className = "net " + (ok ? "on" : "off");
+  };
+
+  NET.init("admin").then(function (r) {
+    if (r.mode === "local") {
+      $("netinfo").textContent = "● 本機模式";
+      $("netinfo").className = "net off";
+    }
+
+    NET.on("outline", function (o) { outline = list(o); renderRemote(); });
+    NET.on("state", function (s) { state = s; renderRemote(); });
+
+    NET.on("monkey", function (m) {
+      monkey = m || { terms: [], at: 0 };
+      renderMonkey();
+    });
+
+    NET.on("lottery", function (l) {
+      lottery = l || {};
+      renderLottery();
+    });
+
+    // 第一次開後臺時資料庫是空的，把預設題庫推上去，投影幕和手機才有東西可用
+    setTimeout(function () {
+      if (!terms().length) {
+        NET.set("monkey", { terms: MONKEY.TERMS, at: 0 });
+      }
+    }, 1200);
+
+    renderRemote();
+    renderMonkey();
+    renderLottery();
+  });
+})();
+</script>
+</body>
+</html>

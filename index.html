@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>相見歡｜台科大崇德志工社</title>
+<meta name="description" content="台科大崇德志工社相見歡的現場互動簡報：三隻猴子、指導老師介紹、抽獎、大合照。">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/logo1.webp">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  body{background:var(--cream);color:var(--ink);}
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;
+    background:
+      radial-gradient(48rem 30rem at 12% -8%, rgba(242,167,44,.20), transparent 62%),
+      radial-gradient(44rem 28rem at 92% 6%, rgba(169,206,59,.22), transparent 62%);
+  }
+  .wrap{width:100%;max-width:44rem;margin:0 auto;padding:2.5rem 1.25rem 4rem;}
+
+  .logos{display:flex;align-items:center;justify-content:center;gap:.9rem;margin-bottom:.75rem;}
+  .logos img{height:min(4.5rem,18vw);width:auto;display:block;}
+
+  h1{margin:.25rem 0 .5rem;text-align:center;font-size:clamp(1.8rem,6vw,2.6rem);font-weight:900;}
+  h1 em{font-style:normal;background:linear-gradient(180deg,transparent 62%,rgba(169,206,59,.55) 62%);}
+  .lede{text-align:center;color:var(--ink-soft);margin:0 auto 2rem;max-width:28rem;}
+
+  .card{
+    background:var(--card);border:2px solid var(--line);border-radius:1.4rem;
+    padding:1.4rem;box-shadow:0 .35rem 0 rgba(51,51,51,.06);margin-bottom:1rem;
+  }
+  .card h2{margin:0 0 .5rem;font-size:1.15rem;font-weight:900;}
+  .card p{margin:0 0 .9rem;color:var(--ink-soft);font-size:.95rem;}
+  .card .btn{width:100%;}
+
+  .qrbox{text-align:center;}
+  .qrbox .qr{width:min(16rem,60vw);margin:0 auto 1rem;border:2px solid var(--line);}
+  .url{font-size:.82rem;color:var(--ink-soft);word-break:break-all;}
+
+  ol{padding-left:1.2rem;margin:0;}
+  ol li{margin-bottom:.5rem;font-size:.95rem;}
+  kbd{
+    font:inherit;font-size:.85em;padding:0 .35rem;border-radius:.3rem;
+    background:#F4EFE0;border:1px solid var(--line);font-weight:800;
+  }
+  .flow{list-style:none;padding:0;margin:0;display:grid;gap:.5rem;}
+  .flow li{
+    display:flex;gap:.7rem;align-items:baseline;
+    padding:.6rem .8rem;border-radius:.8rem;background:#FAF6EA;font-size:.95rem;
+  }
+  .flow b{flex:none;}
+  .foot{margin-top:2rem;text-align:center;font-size:.82rem;color:var(--ink-soft);}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="logos">
+    <img src="assets/logo1.webp" alt="台科大崇德志工社社徽">
+    <img src="assets/logo2.webp" alt="台科大崇德志工社">
+  </div>
+  <h1>崇德志工社 <em>相見歡</em></h1>
+  <p class="lede">現場會用到三個畫面：投影幕、後臺、比劃猴的手機。</p>
+
+  <div class="card">
+    <h2>🖥️ 投影幕（接投影機的那台）</h2>
+    <p>開這一頁，按 <kbd>F</kbd> 全螢幕，之後用 <kbd>→</kbd> 一路走完。
+       <kbd>Esc</kbd> 可以跳到任何一頁。</p>
+    <a class="btn" href="stage.html">開啟投影幕 →</a>
+  </div>
+
+  <div class="card">
+    <h2>🎛️ 後臺（主持人的手機或筆電）</h2>
+    <p>遙控投影幕翻頁、換三隻猴子的題目、填抽獎名單與獎項。
+       <b>不要把這一頁投出去</b>，題目和名單都在上面。</p>
+    <a class="btn" href="admin.html">開啟後臺 →</a>
+  </div>
+
+  <div class="card qrbox">
+    <h2>🙊 比劃猴的手機</h2>
+    <div class="qr" id="qr"></div>
+    <p class="url" id="url"></p>
+    <a class="btn" href="phone.html">開啟比劃猴頁面 →</a>
+  </div>
+
+  <div class="card">
+    <h2>📋 今天的流程</h2>
+    <ul class="flow">
+      <li><b>首頁</b><span>台科大崇德志工社，相見歡</span></li>
+      <li><b>🙈 三隻猴子</b><span>比劃、傳話、閉眼作畫，題目只在比劃猴手機上</span></li>
+      <li><b>🎓 指導老師</b><span>社團背後一直在的人</span></li>
+      <li><b>🎁 抽獎</b><span>後臺填名單，投影幕跑馬燈抽</span></li>
+      <li><b>📸 大合照</b><span>按 <kbd>T</kbd> 跑 3・2・1</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>✅ 活動前要做的事</h2>
+    <ol>
+      <li>照 <a href="docs/SETUP.md">docs/SETUP.md</a> 建 Firebase，把設定存成 repo secret <code>FIREBASE_CONFIG</code>（不會進 git），Pages 來源改成「GitHub Actions」。</li>
+      <li>把 <a href="assets/teachers-data.js">assets/teachers-data.js</a> 的佔位資料換成真的老師，照片放進 <code>media/</code>。</li>
+      <li>投影幕先開一次 <a href="stage.html">stage.html</a>，確認右下角顯示「● 已連線」。</li>
+      <li>後臺貼好三隻猴子的題庫、抽獎名單與獎項。</li>
+      <li>把上面那個 QR 印出來，或直接在 <a href="stage.html">三隻猴子規則那一頁</a>讓比劃猴掃。</li>
+    </ol>
+  </div>
+
+  <p class="foot">台科大崇德志工社 NTUST CDVC</p>
+</main>
+
+<script src="assets/settings.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/qrcode.js"></script>
+<script src="assets/net.js"></script>
+<script>
+(function () {
+  "use strict";
+  var url = window.CDVC_NET.url("phone.html");
+  document.getElementById("url").textContent = url;
+  try {
+    document.getElementById("qr").innerHTML = window.CDVC_QR.svg(url);
+  } catch (e) {
+    document.getElementById("qr").textContent = "QR 產生失敗";
+  }
+})();
+</script>
+</body>
+</html>

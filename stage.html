@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>投影幕｜台科大崇德志工社 相見歡</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/logo1.webp">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  html,body{height:100%;overflow:hidden;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;
+    background:
+      radial-gradient(58rem 34rem at 10% -10%, rgba(242,167,44,.22), transparent 62%),
+      radial-gradient(52rem 32rem at 92% 4%, rgba(169,206,59,.24), transparent 62%),
+      radial-gradient(46rem 30rem at 50% 112%, rgba(14,140,143,.14), transparent 60%);
+  }
+
+  /* ---------- 畫面 ---------- */
+  .screen{
+    position:relative;z-index:1;
+    flex:1;min-height:0;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    text-align:center;
+    padding:4vmin 6vmin;
+    gap:1.2vmin;
+  }
+
+  .eyebrow{
+    margin:0;
+    font-size:clamp(1rem,2.4vmin,1.8rem);
+    font-weight:900;letter-spacing:.34em;
+    color:var(--ink-2);
+  }
+  .huge{
+    margin:0;
+    font-size:clamp(3rem,13vmin,11rem);
+    font-weight:900;line-height:1.05;letter-spacing:.02em;
+  }
+  .big{
+    margin:0;
+    font-size:clamp(2.2rem,8.5vmin,7rem);
+    font-weight:900;line-height:1.15;
+  }
+  .lede{
+    margin:0;
+    max-width:34em;
+    font-size:clamp(1.1rem,3.1vmin,2.4rem);
+    line-height:1.6;color:var(--ink-2);
+  }
+  .lede b{color:var(--ink);}
+  .quiet{color:var(--ink-2);opacity:.85;}
+
+  .mark{background:linear-gradient(180deg,transparent 58%,rgba(169,206,59,.55) 58%);}
+
+  /* ---------- 首頁 ---------- */
+  .logos{display:flex;align-items:center;justify-content:center;gap:2.4vmin;}
+  .logos img{height:min(18vmin,10rem);width:auto;display:block;}
+
+  .cover__sub{
+    margin:0;
+    font-size:clamp(1.6rem,6vmin,4.6rem);
+    font-weight:900;color:var(--flame);letter-spacing:.3em;
+    padding-left:.3em;
+  }
+
+  /* ---------- 流程 ---------- */
+  .agenda{
+    list-style:none;margin:2vmin 0 0;padding:0;
+    display:grid;gap:1.6vmin;width:min(100%,52rem);
+  }
+  .agenda li{
+    display:flex;align-items:center;gap:2.4vmin;
+    padding:1.8vmin 3vmin;
+    border-radius:1.4rem;
+    background:rgba(255,255,255,.72);
+    border:.3vmin solid var(--paper-3);
+    text-align:left;
+  }
+  .agenda .e{font-size:clamp(1.8rem,5.4vmin,3.6rem);line-height:1;flex:none;}
+  .agenda .t{font-size:clamp(1.2rem,3.4vmin,2.6rem);font-weight:900;flex:none;}
+  .agenda .d{font-size:clamp(.95rem,2.5vmin,1.7rem);color:var(--ink-2);}
+
+  /* ---------- 三隻猴子 ---------- */
+  .roles{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:2vmin;width:min(100%,66rem);margin-top:1vmin;
+  }
+  .role{
+    background:rgba(255,255,255,.8);
+    border:.35vmin solid var(--paper-3);
+    border-radius:1.6rem;
+    padding:2.4vmin 2vmin;
+  }
+  .role__e{font-size:clamp(2.4rem,8vmin,5.4rem);line-height:1.1;}
+  .role__n{
+    font-size:clamp(1.15rem,3.2vmin,2.3rem);
+    font-weight:900;margin:.4vmin 0 .8vmin;
+  }
+  .role__r{font-size:clamp(.9rem,2.3vmin,1.6rem);color:var(--ink-2);line-height:1.55;}
+
+  .scan{
+    display:flex;align-items:center;gap:2.4vmin;
+    background:rgba(255,255,255,.8);
+    border:.35vmin solid var(--paper-3);
+    border-radius:1.6rem;padding:2vmin 2.6vmin;margin-top:1.4vmin;
+  }
+  .scan .qr{width:min(22vmin,13rem);flex:none;}
+  .scan__t{text-align:left;font-size:clamp(.95rem,2.5vmin,1.7rem);line-height:1.6;}
+  .scan__t b{display:block;font-size:clamp(1.1rem,3vmin,2.1rem);margin-bottom:.4vmin;}
+  .scan__u{font-size:clamp(.75rem,1.8vmin,1.1rem);color:var(--ink-2);word-break:break-all;}
+
+  .pill{
+    display:inline-block;
+    padding:.9vmin 3vmin;border-radius:999px;
+    background:var(--flame);color:#fff;
+    font-size:clamp(1.1rem,3.2vmin,2.4rem);font-weight:900;letter-spacing:.08em;
+  }
+  .secret{
+    display:flex;align-items:center;justify-content:center;gap:2vmin;
+    width:min(100%,56rem);
+    margin:1vmin 0;
+    padding:5vmin 4vmin;
+    border-radius:2rem;
+    border:.5vmin dashed var(--paper-3);
+    background:rgba(255,255,255,.55);
+    font-size:clamp(1.4rem,4.6vmin,3.4rem);font-weight:900;color:var(--ink-2);
+  }
+  .secret span{font-size:clamp(2.4rem,9vmin,6rem);line-height:1;}
+  .rolebar{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:1.2vmin 3vmin;
+    font-size:clamp(.95rem,2.5vmin,1.7rem);color:var(--ink-2);
+  }
+  .rolebar b{color:var(--ink);}
+
+  .timer{
+    font-variant-numeric:tabular-nums;
+    font-size:clamp(2rem,9vmin,7rem);font-weight:900;line-height:1;
+    color:var(--teal);
+  }
+  .timer.warn{color:var(--err);}
+  .timer.idle{opacity:.28;}
+
+  /* ---------- 老師 ---------- */
+  .teacher{
+    display:flex;align-items:center;gap:5vmin;
+    width:min(100%,74rem);text-align:left;
+  }
+  .teacher__pic{
+    flex:none;width:min(34vmin,22rem);aspect-ratio:3/4;
+    border-radius:1.8rem;overflow:hidden;
+    border:.5vmin solid #fff;
+    box-shadow:0 1.4vmin 3vmin rgba(64,38,15,.18);
+    background:var(--paper-2) center/60% no-repeat url("assets/logo1.webp");
+  }
+  .teacher__pic img{width:100%;height:100%;object-fit:cover;display:block;}
+  .teacher__n{margin:0;font-size:clamp(2rem,7vmin,5rem);font-weight:900;line-height:1.15;}
+  .teacher__t{
+    margin:.6vmin 0 2vmin;
+    font-size:clamp(1rem,2.8vmin,2rem);font-weight:800;color:var(--flame);
+  }
+  .teacher__l{list-style:none;margin:0;padding:0;display:grid;gap:1.2vmin;}
+  .teacher__l li{
+    font-size:clamp(1rem,2.9vmin,2.1rem);line-height:1.6;color:var(--ink-2);
+    padding-left:1.6vmin;border-left:.4vmin solid var(--green);
+  }
+
+  /* ---------- 抽獎 ---------- */
+  .prizes{
+    list-style:none;margin:2vmin 0 0;padding:0;
+    display:flex;flex-wrap:wrap;justify-content:center;gap:1.6vmin;
+    width:min(100%,60rem);
+  }
+  .prizes li{
+    padding:1.4vmin 2.6vmin;border-radius:1.2rem;
+    background:rgba(255,255,255,.78);
+    border:.3vmin solid var(--paper-3);
+    font-size:clamp(1rem,2.8vmin,2rem);font-weight:800;
+  }
+  .prizes li.on{background:var(--gold);border-color:var(--orange-dark);color:#fff;}
+  .prizes li small{display:block;font-size:.7em;font-weight:700;opacity:.8;}
+
+  .roll{
+    width:min(100%,60rem);
+    min-height:22vmin;
+    display:flex;align-items:center;justify-content:center;
+    margin:1vmin 0;
+    padding:3vmin 4vmin;
+    border-radius:2rem;
+    background:rgba(255,255,255,.82);
+    border:.5vmin solid var(--paper-3);
+    font-size:clamp(2.4rem,11vmin,8rem);font-weight:900;line-height:1.1;
+    word-break:break-all;
+  }
+  .roll.spin{color:var(--ink-2);opacity:.7;}
+  .roll.win{
+    color:var(--flame);
+    border-color:var(--gold);
+    box-shadow:0 0 0 .8vmin rgba(233,163,23,.28);
+    animation:pop .45s ease;
+  }
+  .roll.empty{font-size:clamp(1.1rem,3vmin,2.2rem);font-weight:800;color:var(--ink-2);}
+  @keyframes pop{
+    0%{transform:scale(.82);opacity:.2;}
+    60%{transform:scale(1.06);}
+    100%{transform:scale(1);opacity:1;}
+  }
+
+  .won{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:.8vmin 1.4vmin;
+    width:min(100%,72rem);
+    font-size:clamp(.85rem,2.2vmin,1.5rem);
+  }
+  .won b{
+    padding:.5vmin 1.4vmin;border-radius:999px;
+    background:rgba(169,206,59,.3);font-weight:800;
+  }
+  .won small{font-weight:700;opacity:.7;}
+
+  /* ---------- 大合照 ---------- */
+  .count{
+    font-size:clamp(6rem,40vmin,30rem);font-weight:900;line-height:1;
+    color:var(--flame);animation:pop .4s ease;
+  }
+
+  /* ---------- 結束卡 ---------- */
+  .endgrid{
+    display:flex;align-items:center;justify-content:center;gap:5vmin;
+    width:min(100%,68rem);margin-top:1.5vmin;
+  }
+  .endgrid .qr{width:min(26vmin,15rem);flex:none;}
+  .endgrid__t{text-align:left;}
+
+  /* ---------- 下方工具列 ---------- */
+  .bar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;gap:.5rem;
+    padding:.4rem .7rem;
+    background:rgba(64,38,15,.9);color:#F7E3B4;
+    font-size:.8rem;
+    transition:opacity .3s ease;
+  }
+  .bar.hide{opacity:0;pointer-events:none;}
+  .bar button{
+    font:inherit;font-weight:800;cursor:pointer;
+    padding:.3rem .7rem;border-radius:.5rem;
+    border:1px solid rgba(247,227,180,.35);
+    background:transparent;color:inherit;
+  }
+  .bar button:hover{background:rgba(247,227,180,.16);}
+  .bar .grow{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bar kbd{
+    font:inherit;font-size:.9em;font-weight:900;
+    padding:0 .3rem;border-radius:.25rem;background:rgba(247,227,180,.18);
+  }
+  .net{font-weight:800;white-space:nowrap;}
+  .net.on{color:var(--green);}
+  .net.off{color:#F0A0A0;}
+
+  /* ---------- 跳頁選單 ---------- */
+  .menu{
+    position:fixed;inset:0;z-index:9;
+    background:rgba(64,38,15,.94);color:#FDF2D8;
+    padding:3vmin 6vmin;overflow:auto;
+  }
+  .menu h2{margin:0 0 2vmin;font-size:clamp(1.2rem,3.4vmin,2rem);}
+  .menu ol{
+    margin:0;padding:0;list-style:none;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));gap:.5rem;
+  }
+  .menu li{
+    padding:.55rem .9rem;border-radius:.6rem;cursor:pointer;
+    border:1px solid rgba(253,242,216,.2);
+    font-size:clamp(.85rem,2vmin,1.05rem);
+  }
+  .menu li:hover{background:rgba(253,242,216,.14);}
+  .menu li.on{background:var(--gold);color:#40260F;font-weight:900;}
+  .menu li i{font-style:normal;opacity:.6;margin-right:.5rem;}
+</style>
+</head>
+<body>
+
+<div class="screen" id="screen"></div>
+
+<div class="bar" id="bar">
+  <button type="button" id="b-prev">← 上一步</button>
+  <button type="button" id="b-next">下一步 →</button>
+  <button type="button" id="b-menu">跳頁 (Esc)</button>
+  <button type="button" id="b-full">全螢幕 (F)</button>
+  <span class="grow" id="barinfo"></span>
+  <span class="net" id="netinfo">連線中…</span>
+</div>
+
+<div class="menu" id="menu" hidden>
+  <h2>跳到哪一頁？（Esc 關閉）</h2>
+  <ol id="menulist"></ol>
+</div>
+
+<script src="assets/settings.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/qrcode.js"></script>
+<script src="assets/monkeys-data.js"></script>
+<script src="assets/teachers-data.js"></script>
+<script src="assets/net.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var NET = window.CDVC_NET;
+  var QR = window.CDVC_QR;
+  var MONKEY = window.CDVC_MONKEYS;
+  var TEACHERS = (window.CDVC_TEACHERS || {}).TEACHERS || [];
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  /* ============================================================
+     流程：一維陣列，主持人一直按右鍵就會走完
+     ============================================================ */
+  var PARTS = {
+    open: "開場",
+    monkey: "三隻猴子",
+    teacher: "指導老師",
+    lottery: "抽獎",
+    photo: "大合照"
+  };
+
+  var S = [];
+  function add(o) { S.push(o); }
+
+  add({ part: "open", kind: "cover", label: "首頁・崇德志工社" });
+  add({ part: "open", kind: "agenda", label: "今天的流程" });
+
+  add({ part: "monkey", kind: "monkeyRules", label: "三隻猴子 規則・比劃猴掃 QR" });
+  add({ part: "monkey", kind: "monkeyPlay", label: "★ 三隻猴子 進行中" });
+
+  add({ part: "teacher", kind: "teacherTitle", label: "指導老師介紹 標題" });
+  TEACHERS.forEach(function (t, n) {
+    add({ part: "teacher", kind: "teacher", ti: n, label: "老師　" + t.name });
+  });
+
+  add({ part: "lottery", kind: "lotteryIntro", label: "抽獎 說明・獎項一覽" });
+  add({ part: "lottery", kind: "lotteryDraw", label: "★ 抽獎進行中" });
+
+  add({ part: "photo", kind: "photo", label: "★ 大合照（T 倒數）" });
+  add({ part: "photo", kind: "outro", label: "結束卡" });
+
+  /* ============================================================
+     狀態
+     ============================================================ */
+  var i = 0;                                    // 目前畫面
+  var monkey = { terms: MONKEY.TERMS, at: 0 };  // 後臺沒設定前先用預設題庫
+  var lottery = {};                             // 名單、獎項、已中獎
+  var timer = { left: 0, total: 0, running: false };
+  var photoCount = 0;
+
+  // 每個節點開機時的第一次回呼只拿來抓基準，不當成指令
+  var ready = { control: false, lottery: false };
+  var lastControlSeq = 0;
+  var lastDrawSeq = 0;
+  var rolling = false;
+  var winner = null;      // { name, prize }
+
+  /* ---------- 小工具 ---------- */
+
+  /** Firebase 讀回來的陣列有時候會變成物件，統一攤成陣列 */
+  function list(v) {
+    if (!v) { return []; }
+    if (Array.isArray(v)) { return v.filter(function (x) { return x != null; }); }
+    return Object.keys(v).map(function (k) { return v[k]; }).filter(function (x) { return x != null; });
+  }
+
+  function pool() { return list(lottery.pool); }
+  function prizes() { return list(lottery.prizes); }
+  function history() { return list(lottery.history); }
+
+  function currentPrize() {
+    var ps = prizes();
+    if (!ps.length) { return null; }
+    var at = Math.min(Math.max(lottery.prizeAt || 0, 0), ps.length - 1);
+    return ps[at];
+  }
+
+  /** 不用 Math.random，抽獎要讓人信得過 */
+  function pick(n) {
+    if (n <= 0) { return 0; }
+    try {
+      var a = new Uint32Array(1);
+      crypto.getRandomValues(a);
+      return a[0] % n;
+    } catch (e) {
+      return Math.floor(Math.random() * n);
+    }
+  }
+
+  /* ============================================================
+     畫面
+     ============================================================ */
+  function render() {
+    var sc = S[i];
+    $("screen").innerHTML = VIEWS[sc.kind] ? VIEWS[sc.kind](sc) : "";
+    renderBar();
+    broadcast();
+  }
+
+  function renderBar() {
+    var sc = S[i];
+    var extra = "";
+    if (sc.kind === "monkeyPlay") { extra = "　<kbd>T</kbd> 計時 90 秒　<kbd>R</kbd> 重設"; }
+    else if (sc.kind === "photo") { extra = "　<kbd>T</kbd> 開始 3・2・1"; }
+    else if (sc.kind === "lotteryDraw") { extra = "　<kbd>T</kbd> 抽一位　<kbd>R</kbd> 清掉中獎者"; }
+
+    $("barinfo").innerHTML =
+      esc(PARTS[sc.part]) + "　·　" + esc(sc.label) +
+      "　(" + (i + 1) + "/" + S.length + ")　房號 " + esc(NET.room) + extra;
+  }
+
+  var VIEWS = {};
+
+  /* ---------- 開場 ---------- */
+  VIEWS.cover = function () {
+    return '' +
+      '<div class="logos">' +
+        '<img src="assets/logo1.webp" alt="台科大崇德志工社社徽">' +
+        '<img src="assets/logo2.webp" alt="台科大崇德志工社">' +
+      '</div>' +
+      '<h1 class="huge">台科大<span class="mark">崇德志工社</span></h1>' +
+      '<p class="cover__sub">相見歡</p>' +
+      '<p class="lede">今天不點名、不自我介紹一輪。<br>我們用玩的，把彼此記起來。</p>';
+  };
+
+  VIEWS.agenda = function () {
+    var rows = [
+      ["🙈", "三隻猴子", "比手畫腳、傳話、閉眼作畫，一次搞定破冰"],
+      ["🎓", "指導老師", "社團背後一直在的人"],
+      ["🎁", "抽獎", "名單都在裡面了，看誰運氣好"],
+      ["📸", "大合照", "今天的證據"]
+    ];
+    return '' +
+      '<p class="eyebrow">今天的流程</p>' +
+      '<h1 class="big">四件事，一個下午</h1>' +
+      '<ul class="agenda">' +
+        rows.map(function (r) {
+          return '<li><span class="e">' + r[0] + '</span>' +
+            '<span class="t">' + esc(r[1]) + '</span>' +
+            '<span class="d">' + esc(r[2]) + '</span></li>';
+        }).join("") +
+      '</ul>';
+  };
+
+  /* ---------- 三隻猴子 ---------- */
+  VIEWS.monkeyRules = function () {
+    var url = NET.url("phone.html");
+    var qr = "";
+    try { qr = QR.svg(url); } catch (e) { qr = "QR 產生失敗"; }
+
+    return '' +
+      '<h1 class="big">三隻猴子</h1>' +
+      '<p class="lede">三個人一組站成一直線。' +
+        '<b>題目只有比劃猴的手機看得到</b>，投影幕上不會出現，' +
+        '答案不是用講的，是<b>用畫的</b>。</p>' +
+      '<div class="roles">' +
+        MONKEY.ROLES.map(function (r) {
+          return '<div class="role"><div class="role__e">' + r.emoji + '</div>' +
+            '<div class="role__n">' + esc(r.name) + '</div>' +
+            '<div class="role__r">' + esc(r.rule) + '</div></div>';
+        }).join("") +
+      '</div>' +
+      '<div class="scan">' +
+        '<div class="qr">' + qr + '</div>' +
+        '<div class="scan__t"><b>🙊 比劃猴掃這裡</b>' +
+          '題目會出現在你的手機上，跟著主持人換題。<br>' +
+          '傳話猴和猜題猴請不要偷看別人的手機。' +
+          '<div class="scan__u">' + esc(url) + '</div>' +
+        '</div>' +
+      '</div>';
+  };
+
+  VIEWS.monkeyPlay = function () {
+    var terms = list(monkey.terms);
+    var at = Math.min(Math.max(monkey.at || 0, 0), Math.max(terms.length - 1, 0));
+
+    return '' +
+      '<p class="eyebrow">三隻猴子</p>' +
+      '<div class="pill">' +
+        (terms.length ? "第 " + (at + 1) + " 題　/　共 " + terms.length + " 題"
+                      : "後臺還沒有題目") +
+      '</div>' +
+      '<div class="secret"><span>🙊</span>題目在比劃猴的手機上</div>' +
+      '<div class="rolebar">' +
+        MONKEY.ROLES.map(function (r) {
+          return '<span>' + r.emoji + ' <b>' + esc(r.name) + '</b>：' + esc(r.short) + '</span>';
+        }).join("") +
+      '</div>' +
+      '<div class="timer' + timerClass() + '" id="timer">' + timerText() + '</div>';
+  };
+
+  function timerClass() {
+    if (!timer.total) { return " idle"; }
+    return timer.left <= 10 ? " warn" : "";
+  }
+
+  function timerText() {
+    var s = timer.total ? timer.left : 90;
+    return ("0" + Math.floor(s / 60)).slice(-2) + ":" + ("0" + (s % 60)).slice(-2);
+  }
+
+  /* ---------- 指導老師 ---------- */
+  VIEWS.teacherTitle = function () {
+    return '' +
+      '<p class="eyebrow">🎓 指導老師</p>' +
+      '<h1 class="big">在我們後面的<span class="mark">那幾個人</span></h1>' +
+      '<p class="lede">社團能一年一年辦下去，不是因為我們特別會辦活動，' +
+        '是因為有人願意一直在後面接住。</p>';
+  };
+
+  VIEWS.teacher = function (sc) {
+    var t = TEACHERS[sc.ti] || {};
+    return '' +
+      '<div class="teacher">' +
+        '<div class="teacher__pic">' +
+          (t.photo ? '<img src="' + esc(t.photo) + '" alt="' + esc(t.name) + '" ' +
+                     'onerror="this.remove()">' : "") +
+        '</div>' +
+        '<div>' +
+          '<h1 class="teacher__n">' + esc(t.name) + '</h1>' +
+          '<p class="teacher__t">' + esc(t.title || "") + '</p>' +
+          '<ul class="teacher__l">' +
+            (t.lines || []).map(function (l) { return '<li>' + esc(l) + '</li>'; }).join("") +
+          '</ul>' +
+        '</div>' +
+      '</div>';
+  };
+
+  /* ---------- 抽獎 ---------- */
+  function prizeList() {
+    var ps = prizes();
+    var at = lottery.prizeAt || 0;
+    if (!ps.length) {
+      return '<p class="lede quiet">後臺還沒有填獎項。</p>';
+    }
+    return '<ul class="prizes">' +
+      ps.map(function (p, n) {
+        var got = history().filter(function (h) { return h.prize === p.name; }).length;
+        return '<li class="' + (n === at ? "on" : "") + '">' + esc(p.name) +
+          '<small>' + got + " / " + (p.count || 1) + ' 位</small></li>';
+      }).join("") +
+      '</ul>';
+  }
+
+  VIEWS.lotteryIntro = function () {
+    return '' +
+      '<p class="eyebrow">🎁 抽獎</p>' +
+      '<h1 class="big">名單已經在箱子裡了</h1>' +
+      '<p class="lede">今天有來的人都在名單上，共 <b>' + pool().length + '</b> 位。<br>' +
+        '抽出來的人請上台，抽過就不會再抽到你。</p>' +
+      prizeList();
+  };
+
+  VIEWS.lotteryDraw = function () {
+    var p = currentPrize();
+    var names = pool();
+    var won = history();
+
+    var body;
+    if (winner) {
+      body = '<div class="roll win" id="roll">' + esc(winner.name) + '</div>';
+    } else if (!names.length) {
+      body = '<div class="roll empty" id="roll">名單是空的。請到後臺貼上參加者名單。</div>';
+    } else {
+      body = '<div class="roll" id="roll">？　？　？</div>';
+    }
+
+    return '' +
+      '<p class="eyebrow">' + (p ? "現在抽" : "🎁 抽獎") + '</p>' +
+      '<h1 class="big">' + esc(p ? p.name : "還沒選獎項") + '</h1>' +
+      body +
+      '<p class="lede quiet">' +
+        (winner
+          ? "恭喜 <b>" + esc(winner.name) + "</b>！請上台領獎。"
+          : "剩下 <b>" + names.length + "</b> 位在名單裡　·　後臺按「開始抽獎」，或在這裡按 <b>T</b>") +
+      '</p>' +
+      (won.length
+        ? '<div class="won">已中獎：' +
+            won.map(function (h) {
+              return '<b>' + esc(h.name) + '<small> ' + esc(h.prize || "") + '</small></b>';
+            }).join("") +
+          '</div>'
+        : "");
+  };
+
+  /* ---------- 大合照 ---------- */
+  VIEWS.photo = function () {
+    if (photoCount) {
+      return '<div class="count">' + (photoCount === 4 ? "📸" : photoCount) + '</div>';
+    }
+    return '' +
+      '<p class="eyebrow">📸 大合照</p>' +
+      '<h1 class="huge">全部人<span class="mark">擠進來</span></h1>' +
+      '<p class="lede">往中間站、矮的在前面、手可以舉起來。<br>' +
+        '準備好了，主持人按 <b>T</b> 開始倒數。</p>';
+  };
+
+  /* ---------- 結束卡 ---------- */
+  VIEWS.outro = function () {
+    var url = (window.CDVC_CONFIG || {}).socialUrl || "https://www.instagram.com/ntustcdvc/";
+    var qr = "";
+    try { qr = QR.svg(url); } catch (e) { qr = ""; }
+
+    return '' +
+      '<div class="logos"><img src="assets/logo1.webp" alt="崇德志工社"></div>' +
+      '<h1 class="big">今天很高興<span class="mark">見到你</span></h1>' +
+      '<div class="endgrid">' +
+        '<div class="qr">' + qr + '</div>' +
+        '<div class="endgrid__t">' +
+          '<p class="lede">社團的活動都會發在 Instagram，<br>' +
+            '下次出隊、開伙、練歌，歡迎直接來。</p>' +
+          '<p class="lede quiet" style="font-size:clamp(.9rem,2.2vmin,1.5rem)">' +
+            esc(url) + '</p>' +
+        '</div>' +
+      '</div>';
+  };
+
+  /* ============================================================
+     計時器
+     ============================================================ */
+  function startTimer(sec) {
+    timer.total = sec;
+    timer.left = sec;
+    timer.running = true;
+    paintTimer();
+  }
+
+  function paintTimer() {
+    var el = $("timer");
+    if (el) {
+      el.textContent = timerText();
+      el.className = "timer" + timerClass();
+    }
+  }
+
+  setInterval(function () {
+    if (!timer.running || timer.left <= 0) { return; }
+    timer.left--;
+    if (timer.left <= 0) { timer.running = false; }
+    paintTimer();
+  }, 1000);
+
+  /* ============================================================
+     抽獎：亂數與結果都在這裡決定，跑馬燈停在誰就是誰
+     ============================================================ */
+  function drawOne() {
+    if (rolling) { return; }
+    var names = pool();
+    if (!names.length) { return; }
+
+    var p = currentPrize();
+    var prizeName = p ? p.name : "獎品";
+
+    rolling = true;
+    winner = null;
+    render();
+
+    var el = $("roll");
+    if (!el) { rolling = false; return; }
+    el.className = "roll spin";
+
+    var at = 0;
+    var spin = setInterval(function () {
+      el.textContent = names[at % names.length];
+      at++;
+    }, 70);
+
+    setTimeout(function () {
+      clearInterval(spin);
+
+      var n = pick(names.length);
+      winner = { name: names[n], prize: prizeName };
+      rolling = false;
+
+      // 先畫再寫，網路慢的時候畫面也不會卡住
+      render();
+      NET.set("lottery/pool", names.filter(function (x, k) { return k !== n; }));
+      NET.push("lottery/history", { name: winner.name, prize: prizeName, at: Date.now() });
+    }, 2600);
+  }
+
+  /* ============================================================
+     翻頁
+     ============================================================ */
+  function go(step) {
+    var next = i + step;
+    if (next < 0 || next >= S.length) { return; }
+    i = next;
+    winner = null;
+    render();
+  }
+
+  function jump(n) {
+    i = Math.max(0, Math.min(S.length - 1, n));
+    winner = null;
+    render();
+  }
+
+  function broadcast() {
+    var sc = S[i];
+    NET.set("state", {
+      i: i,
+      part: sc.part,
+      kind: sc.kind,
+      label: sc.label,
+      total: S.length,
+      updatedAt: Date.now()
+    });
+  }
+
+  /* ============================================================
+     鍵盤
+     ============================================================ */
+  document.addEventListener("keydown", function (e) {
+    var sc = S[i];
+
+    if (e.key === "Escape") { e.preventDefault(); toggleMenu(); return; }
+    if (!$("menu").hidden) { return; }
+
+    if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown" || e.key === "Enter") {
+      e.preventDefault(); go(1); return;
+    }
+    if (e.key === "ArrowLeft" || e.key === "PageUp") {
+      e.preventDefault(); go(-1); return;
+    }
+
+    var k = e.key.toLowerCase();
+
+    if (k === "f") { toggleFull(); return; }
+
+    if (k === "t") {
+      if (sc.kind === "photo") { runPhotoCountdown(); return; }
+      if (sc.kind === "lotteryDraw") { drawOne(); return; }
+      if (sc.kind === "monkeyPlay") {
+        if (timer.total) { timer.running = !timer.running; paintTimer(); }
+        else { startTimer(90); }
+      }
+      return;
+    }
+
+    if (k === "r") {
+      if (sc.kind === "monkeyPlay") { timer = { left: 0, total: 0, running: false }; render(); }
+      if (sc.kind === "photo") { photoCount = 0; render(); }
+      if (sc.kind === "lotteryDraw") { winner = null; render(); }
+      return;
+    }
+  });
+
+  function runPhotoCountdown() {
+    if (photoCount) { return; }
+    var seq = [3, 2, 1, 4];   // 4 是快門那一格
+    var at = 0;
+    (function step() {
+      photoCount = seq[at];
+      render();
+      at++;
+      if (at < seq.length) { setTimeout(step, 1000); }
+      else { setTimeout(function () { photoCount = 0; render(); }, 2500); }
+    })();
+  }
+
+  function toggleFull() {
+    if (document.fullscreenElement) { document.exitFullscreen(); }
+    else { document.documentElement.requestFullscreen()["catch"](function () {}); }
+  }
+
+  function toggleMenu() {
+    var m = $("menu");
+    if (m.hidden) {
+      $("menulist").innerHTML = S.map(function (s, n) {
+        return '<li data-jump="' + n + '" class="' + (n === i ? "on" : "") + '">' +
+          '<i>' + (n + 1) + '</i>' + esc(s.label) + '</li>';
+      }).join("");
+    }
+    m.hidden = !m.hidden;
+  }
+
+  /* ============================================================
+     滑鼠、按鈕
+     ============================================================ */
+  var hideAt = null;
+
+  function poke() {
+    $("bar").classList.remove("hide");
+    clearTimeout(hideAt);
+    hideAt = setTimeout(function () { $("bar").classList.add("hide"); }, 3000);
+  }
+
+  document.addEventListener("mousemove", poke);
+  poke();
+
+  $("b-prev").addEventListener("click", function () { go(-1); });
+  $("b-next").addEventListener("click", function () { go(1); });
+  $("b-menu").addEventListener("click", toggleMenu);
+  $("b-full").addEventListener("click", toggleFull);
+
+  $("menu").addEventListener("click", function (e) {
+    var li = e.target.closest("[data-jump]");
+    if (!li) { return; }
+    jump(+li.dataset.jump);
+    $("menu").hidden = true;
+  });
+
+  /* ============================================================
+     連線
+     ============================================================ */
+  NET.onStatus = function (ok) {
+    var el = $("netinfo");
+    el.textContent = ok ? "● 已連線" : "● 連線中斷";
+    el.className = "net " + (ok ? "on" : "off");
+  };
+
+  NET.init("stage").then(function (r) {
+    if (r.mode === "local") {
+      $("netinfo").textContent = "● 本機模式（手機不會同步）";
+      $("netinfo").className = "net off";
+    }
+
+    NET.on("monkey", function (m) {
+      // 後臺第一次開之前資料庫是空的，先讓投影幕用預設題庫撐著
+      monkey = m || { terms: MONKEY.TERMS, at: 0 };
+      if (S[i].kind === "monkeyPlay") { render(); }
+    });
+
+    NET.on("lottery", function (l) {
+      lottery = l || {};
+
+      // 後臺按下「開始抽獎」。用 seq 擋掉重播，重整投影幕不會又抽一次。
+      var d = lottery.draw || {};
+      if (!ready.lottery) {
+        ready.lottery = true;
+        lastDrawSeq = d.seq || 0;          // 開機當下那筆是上一場留下來的，不算
+      } else if (d.seq && d.seq > lastDrawSeq) {
+        lastDrawSeq = d.seq;
+        if (S[i].kind === "lotteryDraw") { drawOne(); return; }
+      }
+
+      if (S[i].part === "lottery") { render(); }
+    });
+
+    NET.on("control", function (c) {
+      c = c || {};
+
+      // 同上：第一次回呼是開機基準，之後的才是後臺真的按了按鈕
+      if (!ready.control) {
+        ready.control = true;
+        lastControlSeq = c.seq || 0;
+        return;
+      }
+      if (!c.seq || c.seq <= lastControlSeq) { return; }
+      lastControlSeq = c.seq;
+
+      if (c.cmd === "next") { go(1); }
+      else if (c.cmd === "prev") { go(-1); }
+      else if (c.cmd === "goto") { jump(+c.n || 0); }
+      else if (c.cmd === "photo") { runPhotoCountdown(); }
+    });
+
+    // 把流程目錄交給後臺，遙控的「跳到哪一頁」才知道有哪些頁
+    NET.set("outline", S.map(function (s) {
+      return { label: s.label, part: PARTS[s.part] };
+    }));
+
+    render();
+  });
+})();
+</script>
+</body>
+</html>

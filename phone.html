@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>比劃猴｜三隻猴子</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FDF2D8">
+<link rel="icon" href="assets/logo1.webp">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  html,body{height:100%;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    display:flex;flex-direction:column;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right)
+            env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  .top{
+    flex:none;
+    display:flex;align-items:center;gap:.6rem;
+    padding:.9rem 1.1rem;
+    font-size:.9rem;font-weight:800;color:var(--ink-2);
+  }
+  .top img{width:1.9rem;height:auto;}
+  .top .net{margin-left:auto;font-size:.8rem;}
+  .top .net.on{color:var(--green-dark);}
+  .top .net.off{color:var(--err);}
+
+  main{
+    flex:1;min-height:0;overflow:auto;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:1.1rem;
+    padding:1rem 1.3rem 2rem;
+    text-align:center;
+  }
+
+  .role{
+    display:inline-flex;align-items:center;gap:.5rem;
+    padding:.5rem 1.1rem;border-radius:999px;
+    background:var(--flame);color:#fff;
+    font-size:1rem;font-weight:900;
+  }
+  .n{
+    font-size:.95rem;font-weight:900;letter-spacing:.16em;
+    color:var(--ink-2);
+  }
+
+  .term{
+    width:100%;
+    display:flex;align-items:center;justify-content:center;
+    min-height:9rem;
+    padding:1.4rem 1rem;
+    border-radius:1.6rem;
+    background:#fff;
+    border:.35rem solid var(--gold);
+    box-shadow:0 .5rem 1.4rem rgba(64,38,15,.14);
+    font-size:clamp(2.6rem,17vw,5.5rem);
+    font-weight:900;line-height:1.15;
+    word-break:break-all;
+  }
+  .term.none{
+    border-color:var(--paper-3);
+    border-style:dashed;
+    background:rgba(255,255,255,.5);
+    font-size:1.15rem;font-weight:800;color:var(--ink-2);
+    line-height:1.7;
+  }
+
+  .rule{
+    margin:0;
+    font-size:1rem;line-height:1.7;color:var(--ink-2);
+    max-width:22rem;
+  }
+  .rule b{color:var(--ink);}
+
+  .warn{
+    margin:0;
+    font-size:.88rem;color:var(--ink-2);opacity:.8;
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <img src="assets/logo1.webp" alt="崇德志工社">
+  <span>三隻猴子</span>
+  <span class="net" id="netinfo">連線中…</span>
+</div>
+
+<main id="view"></main>
+
+<script src="assets/settings.js"></script>
+<script src="assets/firebase-config.js"></script>
+<script src="assets/monkeys-data.js"></script>
+<script src="assets/net.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var NET = window.CDVC_NET;
+  var MONKEY = window.CDVC_MONKEYS;
+  var MIME = MONKEY.ROLES[0];     // 🙊 比劃猴
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  function list(v) {
+    if (!v) { return []; }
+    if (Array.isArray(v)) { return v.filter(function (x) { return x != null; }); }
+    return Object.keys(v).map(function (k) { return v[k]; }).filter(function (x) { return x != null; });
+  }
+
+  function render(m) {
+    var terms = list((m || {}).terms);
+    var at = Math.min(Math.max((m || {}).at || 0, 0), Math.max(terms.length - 1, 0));
+    var term = terms[at];
+
+    $("view").innerHTML = '' +
+      '<div class="role">' + MIME.emoji + " " + esc(MIME.name) + "　" + esc(MIME.short) + '</div>' +
+      (term
+        ? '<p class="n">第 ' + (at + 1) + " 題　/　共 " + terms.length + ' 題</p>' +
+          '<div class="term">' + esc(term) + '</div>' +
+          '<p class="rule">只能比手畫腳，<b>一個字都不能說</b>。<br>' +
+            '主持人換題的時候，這裡會自己跟著換。</p>' +
+          '<p class="warn">🙉 傳話猴、🙈 猜題猴請不要看這支手機。</p>'
+        : '<div class="term none">等主持人開始出題⋯<br>題目會自動出現在這裡，這一頁不用重整。</div>');
+  }
+
+  NET.onStatus = function (ok) {
+    var el = $("netinfo");
+    el.textContent = ok ? "● 已連線" : "● 連線中斷";
+    el.className = "net " + (ok ? "on" : "off");
+  };
+
+  NET.init("phone").then(function (r) {
+    if (r.mode === "local") {
+      $("netinfo").textContent = "● 本機模式";
+      $("netinfo").className = "net off";
+    }
+    render(null);
+    NET.on("monkey", render);
+  });
+
+  // 出題出到一半螢幕暗掉很掃興。不給就算了，不是每個瀏覽器都有。
+  function keepAwake() {
+    if (!navigator.wakeLock) { return; }
+    navigator.wakeLock.request("screen")["catch"](function () {});
+  }
+  keepAwake();
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) { keepAwake(); }
+  });
+})();
+</script>
+</body>
+</html>
