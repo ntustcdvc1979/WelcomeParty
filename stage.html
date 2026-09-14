@@ -383,9 +383,22 @@
     return Object.keys(v).map(function (k) { return v[k]; }).filter(function (x) { return x != null; });
   }
 
-  function pool() { return list(lottery.pool); }
+  function roster() { return list(lottery.roster); }
   function prizes() { return list(lottery.prizes); }
   function history() { return list(lottery.history); }
+
+  /**
+   * 還沒中獎的人 = 名單減掉已經抽出去的。
+   *
+   * 不另外存一份「剩下的名單」，是因為那份得由投影幕來寫，
+   * 而投影幕不登入——資料庫規則就只能把它開放給所有人寫，名單等於沒保護。
+   * 用算的就只剩 history 需要開放，名單本身鎖得住。
+   */
+  function pool() {
+    var won = {};
+    history().forEach(function (h) { if (h && h.name) { won[h.name] = true; } });
+    return roster().filter(function (n) { return !won[n]; });
+  }
 
   function currentPrize() {
     var ps = prizes();
@@ -691,9 +704,9 @@
       winner = { name: names[n], prize: prizeName };
       rolling = false;
 
-      // 先畫再寫，網路慢的時候畫面也不會卡住
+      // 先畫再寫，網路慢的時候畫面也不會卡住。
+      // 寫進 history 之後，下一次算 pool() 就不會再抽到這個人。
       render();
-      NET.set("lottery/pool", names.filter(function (x, k) { return k !== n; }));
       NET.push("lottery/history", { name: winner.name, prize: prizeName, at: Date.now() });
     }, 2600);
   }
@@ -853,6 +866,9 @@
         lastDrawSeq = d.seq;
         if (S[i].kind === "lotteryDraw") { drawOne(); return; }
       }
+
+      // 後臺按了重設，畫面上那位已經回到名單裡了，不要再掛在投影幕上
+      if (winner && !history().length) { winner = null; }
 
       if (S[i].part === "lottery") { render(); }
     });

@@ -120,6 +120,64 @@
 
   .empty{font-size:.88rem;color:var(--ink-2);padding:.4rem 0;}
   .count{font-size:.85rem;color:var(--ink-2);margin-top:.5rem;}
+
+  /* ---------- 登入／等待核可 ---------- */
+  .gate{
+    background:var(--card);
+    border:2px solid var(--line);
+    border-radius:1.2rem;
+    padding:1.6rem 1.3rem;
+    text-align:center;
+    box-shadow:0 .3rem 0 rgba(51,51,51,.05);
+  }
+  .gate h2{margin:0 0 .5rem;font-size:1.2rem;font-weight:900;}
+  .gate p{margin:0 0 1rem;font-size:.92rem;line-height:1.7;color:var(--ink-2);}
+  .gate .who{
+    display:flex;align-items:center;gap:.7rem;
+    text-align:left;
+    padding:.7rem .9rem;margin-bottom:1rem;
+    border-radius:.8rem;background:#FAF6EA;
+  }
+  .gate .who img{width:2.4rem;height:2.4rem;border-radius:50%;flex:none;}
+  .gate .who b{display:block;font-size:.95rem;}
+  .gate .who small{color:var(--ink-2);font-size:.82rem;word-break:break-all;}
+
+  .gbtn{
+    display:inline-flex;align-items:center;justify-content:center;gap:.6rem;
+    width:100%;padding:.85rem 1rem;
+    border:2px solid var(--line);border-radius:.8rem;
+    background:#fff;font-size:1rem;font-weight:800;
+  }
+  .gbtn svg{width:1.2rem;height:1.2rem;flex:none;}
+
+  .uid{
+    display:block;margin:.5rem 0 0;
+    padding:.6rem .7rem;border-radius:.6rem;
+    background:#F4EFE0;border:1px dashed var(--line);
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.82rem;word-break:break-all;text-align:left;
+    -webkit-user-select:all;user-select:all;
+  }
+  .err{
+    margin:.8rem 0 0;padding:.6rem .8rem;border-radius:.6rem;
+    background:rgba(196,69,59,.1);color:var(--err);
+    font-size:.85rem;font-weight:700;line-height:1.6;
+  }
+
+  /* ---------- 管理員清單 ---------- */
+  .people{list-style:none;margin:.6rem 0 0;padding:0;display:grid;gap:.4rem;}
+  .people li{
+    display:flex;align-items:center;gap:.6rem;
+    padding:.55rem .75rem;border-radius:.7rem;
+    background:#FAF6EA;font-size:.9rem;
+  }
+  .people li.wait{background:rgba(242,167,44,.16);}
+  .people li .t{flex:1;min-width:0;}
+  .people li b{display:block;font-weight:800;}
+  .people li small{color:var(--ink-2);font-size:.8rem;word-break:break-all;}
+  .people li .me{
+    flex:none;font-size:.75rem;font-weight:800;color:var(--green-dark);
+  }
 </style>
 </head>
 <body>
@@ -130,6 +188,12 @@
     <span>相見歡 後臺</span>
     <span class="net" id="netinfo">連線中…</span>
   </div>
+
+  <!-- ---------- 登入／等待核可 ---------- -->
+  <div id="gate" hidden></div>
+
+  <!-- 核可之前完全不渲染，題庫和名單都不會出現在畫面上 -->
+  <div id="app" hidden>
 
   <!-- ---------- 遙控 ---------- -->
   <div class="card">
@@ -201,6 +265,19 @@
       <button type="button" class="mini danger" id="l-clear">清空中獎紀錄</button>
     </div>
   </div>
+
+  <!-- ---------- 管理員 ---------- -->
+  <div class="card" id="a-card" hidden>
+    <h2>👥 後臺管理員 <small>誰可以打開這一頁</small></h2>
+    <div id="a-pending"></div>
+    <ul class="people" id="a-list"></ul>
+    <p class="hint" style="margin:.9rem 0 0" id="a-me"></p>
+    <div class="row" style="margin-top:.6rem">
+      <button type="button" class="mini" id="a-out">登出</button>
+    </div>
+  </div>
+
+  </div><!-- #app -->
 
 </div>
 
@@ -366,10 +443,16 @@
   /* ============================================================
      抽獎
      ============================================================ */
-  function pool() { return list(lottery.pool); }        // 還沒被抽走的
-  function roster() { return list(lottery.roster); }    // 當初貼上來的完整名單
+  function roster() { return list(lottery.roster); }    // 貼上來的完整名單
   function prizes() { return list(lottery.prizes); }
   function history() { return list(lottery.history); }
+
+  /** 還沒中獎的人 = 名單減掉已經抽出去的（跟投影幕同一套算法） */
+  function pool() {
+    var won = {};
+    history().forEach(function (h) { if (h && h.name) { won[h.name] = true; } });
+    return roster().filter(function (n) { return !won[n]; });
+  }
 
   /** 「頭獎 全聯禮券 x3」→ { name:"頭獎 全聯禮券", count:3 } */
   function parsePrize(line) {
@@ -391,9 +474,8 @@
     $("l-count").textContent = "名單裡還有 " + names.length + " 位"
       + (won.length ? "，已抽出 " + won.length + " 位" : "");
 
-    // 輸入框放的是完整名單，不是抽剩的——不然抽過幾輪之後就沒辦法把人放回去了。
-    // 還沒存過 roster 的舊房間就先用現有名單頂著，至少不會開起來是空的。
-    var all = roster().length ? roster() : names;
+    // 輸入框放的是完整名單，不是抽剩的——不然抽過幾輪之後就沒辦法把人放回去了
+    var all = roster();
     if (!touched.names && all.length) { $("l-names").value = all.join("\n"); }
     if (!touched.prizes && ps.length) { $("l-prizes").value = ps.map(prizeText).join("\n"); }
 
@@ -422,12 +504,20 @@
   $("l-names").addEventListener("input", function () { touched.names = true; });
   $("l-prizes").addEventListener("input", function () { touched.prizes = true; });
 
-  /** 名單同時寫兩份：roster 是原始名單，pool 是還沒被抽走的 */
+  /**
+   * 套用名單。同名的只留一份——名單是靠名字比對誰中過獎的，
+   * 重複的名字會一起被消掉，不如一開始就不要有。
+   */
   function applyNames() {
-    var names = lines($("l-names").value);
+    var seen = {};
+    var names = lines($("l-names").value).filter(function (n) {
+      if (seen[n]) { return false; }
+      seen[n] = true;
+      return true;
+    });
+
     touched.names = false;
     NET.set("lottery/roster", names);
-    NET.set("lottery/pool", names);
     return names;
   }
 
@@ -487,17 +577,155 @@
       renderLottery();
     });
 
-    // 第一次開後臺時資料庫是空的，把預設題庫推上去，投影幕和手機才有東西可用
+    renderRemote();
+    renderMonkey();
+    renderLottery();
+
+    // 本機模式沒有資料庫要保護，登入那一套整個跳過
+    if (!NET.auth.enabled) { openUp(); return; }
+
+    NET.onAuth(renderGate);
+  });
+
+  /* ============================================================
+     登入與核可
+     ============================================================ */
+  var opened = false;
+
+  /** 過了關卡才開始渲染內容，也才開始訂閱管理員名單 */
+  function openUp() {
+    if (opened) { return; }
+    opened = true;
+
+    $("gate").hidden = true;
+    $("app").hidden = false;
+
+    // 第一次開後臺時資料庫是空的，把預設題庫推上去，投影幕和手機才有東西可用。
+    // 要等核可過才推，不然寫入會被規則擋掉。
     setTimeout(function () {
       if (!terms().length) {
         NET.set("monkey", { terms: MONKEY.TERMS, at: 0 });
       }
     }, 1200);
 
-    renderRemote();
-    renderMonkey();
-    renderLottery();
+    if (!NET.auth.enabled) { return; }
+
+    $("a-card").hidden = false;
+    NET.onAdmins(function (m) { admins = m || {}; renderPeople(); });
+    NET.onRequests(function (m) { requests = m || {}; renderPeople(); });
+  }
+
+  var admins = {};
+  var requests = {};
+
+  var GOOGLE_MARK =
+    '<svg viewBox="0 0 48 48" aria-hidden="true">' +
+      '<path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.6 9.5 24 9.5z"/>' +
+      '<path fill="#4285F4" d="M46.98 24.55c0-1.6-.15-3.15-.42-4.64H24v9.02h12.94c-.56 2.9-2.2 5.36-4.68 7.02l7.55 5.86c4.42-4.08 6.97-10.09 6.97-17.26z"/>' +
+      '<path fill="#FBBC05" d="M10.4 28.7a14.4 14.4 0 0 1 0-9.4l-7.8-6.1a24 24 0 0 0 0 21.6l7.8-6.1z"/>' +
+      '<path fill="#34A853" d="M24 48c6.5 0 11.9-2.14 15.88-5.83l-7.55-5.86c-2.1 1.42-4.8 2.26-8.33 2.26-6.4 0-11.7-3.7-13.6-9.77l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/>' +
+    '</svg>';
+
+  function renderGate(a) {
+    if (a.approved) { openUp(); renderPeople(); return; }
+
+    $("app").hidden = true;
+    $("gate").hidden = false;
+
+    var err = a.error ? '<p class="err">' + esc(a.error) + "</p>" : "";
+
+    // 還在問 Firebase 有沒有人登入，先不要閃一下登入畫面
+    if (!a.ready) {
+      $("gate").innerHTML = '<div class="gate"><p>檢查登入狀態⋯</p></div>';
+      return;
+    }
+
+    if (!a.user) {
+      $("gate").innerHTML =
+        '<div class="gate">' +
+          "<h2>🔒 後臺需要登入</h2>" +
+          "<p>題庫、抽獎名單都在這一頁，只有社團核可過的帳號進得來。</p>" +
+          '<button type="button" class="gbtn" id="g-in">' + GOOGLE_MARK + "用 Google 帳號登入</button>" +
+          err +
+        "</div>";
+      return;
+    }
+
+    // 登入了但還沒核可
+    $("gate").innerHTML =
+      '<div class="gate">' +
+        '<div class="who">' +
+          (a.user.photo ? '<img src="' + esc(a.user.photo) + '" alt="">' : "") +
+          "<div><b>" + esc(a.user.name || a.user.email) + "</b>" +
+            "<small>" + esc(a.user.email) + "</small></div>" +
+        "</div>" +
+        "<h2>⏳ 等社團核可</h2>" +
+        "<p>已經把你加進申請清單了。請找任何一位現任管理員，" +
+          "在他的後臺按一下核可，這一頁就會自己打開，不用重整。</p>" +
+        "<p style=\"margin-bottom:.3rem\">還沒有任何管理員的話，" +
+          "要在 Firebase 主控台的 Realtime Database 手動建一筆 " +
+          "<code>admins/&lt;下面這串&gt;</code>：</p>" +
+        '<code class="uid">' + esc(a.user.uid) + "</code>" +
+        err +
+        '<div class="row" style="margin-top:1rem">' +
+          '<button type="button" class="mini" id="g-out">換一個帳號</button>' +
+        "</div>" +
+      "</div>";
+  }
+
+  function renderPeople() {
+    if (!NET.auth.enabled) { return; }
+
+    var me = NET.auth.user || {};
+
+    var waiting = Object.keys(requests);
+    $("a-pending").innerHTML = waiting.length
+      ? '<p class="hint" style="margin:.6rem 0 .3rem">等待核可</p>' +
+        '<ul class="people">' +
+          waiting.map(function (uid) {
+            var q = requests[uid] || {};
+            return '<li class="wait"><div class="t"><b>' + esc(q.name || q.email) + "</b>" +
+              "<small>" + esc(q.email) + "</small></div>" +
+              '<button type="button" class="mini" data-ok="' + esc(uid) + '">核可</button>' +
+              '<button type="button" class="mini danger" data-no="' + esc(uid) + '">拒絕</button></li>';
+          }).join("") +
+        "</ul>"
+      : "";
+
+    var uids = Object.keys(admins);
+    $("a-list").innerHTML = uids.map(function (uid) {
+      var p = admins[uid] || {};
+      var isMe = uid === me.uid;
+      return "<li><div class=\"t\"><b>" + esc(p.name || p.email || uid) + "</b>" +
+        "<small>" + esc(p.email || "") + "</small></div>" +
+        (isMe
+          ? '<span class="me">你</span>'
+          : '<button type="button" class="mini danger" data-rm="' + esc(uid) + '">移除</button>') +
+        "</li>";
+    }).join("") || '<span class="empty">名單是空的</span>';
+
+    $("a-me").textContent = "你現在是用 " + (me.email || "") + " 登入。";
+  }
+
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("#g-in, #g-out, #a-out, [data-ok], [data-no], [data-rm]");
+    if (!el) { return; }
+
+    if (el.id === "g-in") { NET.signIn(); return; }
+    if (el.id === "g-out" || el.id === "a-out") { NET.signOut().then(reload); return; }
+
+    if (el.dataset.ok) { NET.approve(el.dataset.ok, requests[el.dataset.ok]); return; }
+    if (el.dataset.no) { NET.reject(el.dataset.no); return; }
+    if (el.dataset.rm) {
+      var p = admins[el.dataset.rm] || {};
+      if (confirm("把 " + (p.email || el.dataset.rm) + " 從管理員名單移除？")) {
+        NET.revoke(el.dataset.rm);
+      }
+    }
   });
+
+  /** 登出之後乾脆整頁重來，才不會有上一個人的資料留在畫面上 */
+  function reload() { location.reload(); }
 })();
 </script>
 </body>

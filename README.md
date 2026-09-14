@@ -8,7 +8,7 @@
 | 頁面 | 給誰 |
 |---|---|
 | [`stage.html`](stage.html) | 投影幕。接投影機的那台，主持人用鍵盤操作。 |
-| [`admin.html`](admin.html) | 後臺。遙控翻頁、管三隻猴子的題目、填抽獎名單與獎項。**不要投出去。** |
+| [`admin.html`](admin.html) | 後臺。遙控翻頁、管三隻猴子的題目、填抽獎名單與獎項。要用核可過的 Google 帳號登入，**不要投出去**。 |
 | [`phone.html`](phone.html) | 比劃猴的手機。只顯示目前的題目。 |
 | [`index.html`](index.html) | 入口。三個頁面的連結、QR code、活動前的檢查清單。 |
 
@@ -67,6 +67,7 @@ assets/
   logo1.webp logo2.webp        兩顆社徽
 media/                         老師照片放這裡
 docs/SETUP.md                  設定與現場操作手冊
+docs/database.rules.json       Firebase 資料庫規則，直接貼進主控台
 .github/workflows/deploy.yml   部署，順便把 secret 寫成 firebase-config.js
 ```
 
@@ -83,10 +84,26 @@ docs/SETUP.md                  設定與現場操作手冊
 | `state` | 投影幕 | 後臺、手機 |
 | `control` | 後臺 | 投影幕 |
 | `monkey` | 後臺 | 投影幕、手機 |
-| `lottery` | 後臺填名單與獎項、投影幕寫抽出來的結果 | 兩邊 |
+| `lottery/roster` `prizes` `prizeAt` `draw` | 後臺 | 投影幕 |
+| `lottery/history` | 投影幕 | 兩邊 |
 
 抽獎的亂數故意放在投影幕：跑馬燈停在誰身上，跟寫進資料庫的中獎者必須是同一個人。
 讓後臺先抽好再叫投影幕演，中間斷線就會對不起來。
+
+「還沒中獎的人」是 `roster` 減掉 `history` 算出來的，不另外存一份。
+這樣投影幕只需要寫 `history`，名單本身就能鎖起來只讓登入過的管理員改
+——不然投影幕沒登入，名單那個節點就得對所有人開放寫入。
+
+## 後臺登入
+
+後臺有題庫和抽獎名單，所以要 Google 登入，而且要社團核可過的帳號。
+名單存在資料庫的 `admins/<uid>`，不進版本庫，所以幹部的 email 不會公開在 repo 上。
+
+第一個管理員要在 Firebase 主控台手動加一筆（步驟在 SETUP 第 1.5 節），
+之後新人自己登入一次，現任管理員在後臺按一下核可就好。
+
+投影幕和比劃猴的手機**不用登入**——現場多一道登入就多一個會卡住的地方。
+本機模式（沒設定 Firebase）整套登入都不會啟動。
 
 ## 關於那把 Firebase API key
 

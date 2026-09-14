@@ -1,0 +1,40 @@
+{
+  "rules": {
+    "admins": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).exists()",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()"
+      }
+    },
+
+    "requests": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).exists()",
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).exists())",
+        ".validate": "!newData.exists() || newData.hasChildren(['email', 'at'])"
+      }
+    },
+
+    "rooms": {
+      "$room": {
+        ".read": true,
+
+        "state":   { ".write": true },
+        "outline": { ".write": true },
+
+        "control": { ".write": "auth != null && root.child('admins').child(auth.uid).exists()" },
+        "monkey":  { ".write": "auth != null && root.child('admins').child(auth.uid).exists()" },
+
+        "lottery": {
+          "history": { ".write": true },
+
+          "roster":  { ".write": "auth != null && root.child('admins').child(auth.uid).exists()" },
+          "prizes":  { ".write": "auth != null && root.child('admins').child(auth.uid).exists()" },
+          "prizeAt": { ".write": "auth != null && root.child('admins').child(auth.uid).exists()" },
+          "draw":    { ".write": "auth != null && root.child('admins').child(auth.uid).exists()" }
+        }
+      }
+    }
+  }
+}
