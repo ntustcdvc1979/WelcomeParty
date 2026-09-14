@@ -132,7 +132,6 @@
         { src: P + "relief1.webp", alt: "醫療關懷隊全隊合影" },
         { src: P + "relief5.webp", alt: "APUVA STEM+M 醫療關懷隊" },
         { src: P + "relief6.webp", alt: "帶著物資出隊" },
-        { src: P + "relief7.webp", alt: "為孩子服務" },
         { src: P + "relief2.webp", alt: "量血氧" },
         { src: P + "relief3.webp", alt: "量血壓" },
         { src: P + "relief4.webp", alt: "準備醫材" },
@@ -147,6 +146,18 @@
         { src: P + "08.webp", alt: "海外義診服務現場" },
         { src: P + "09.webp", alt: "海外交流合影" },
         { src: P + "hoian.webp", alt: "越南惠安古鎮合影" }
+      ]
+    },
+
+    /* 社遊：pptx 裡本來是兩頁九張，這裡挑四張代表性的併成一頁 */
+    outing: {
+      title: "社遊",
+      titleEn: "Club Outings",
+      items: [
+        { src: P + "outing1.webp", alt: "平溪放天燈" },
+        { src: P + "outing2.webp", alt: "擎天崗大合照" },
+        { src: P + "outing3.webp", alt: "草地上野餐" },
+        { src: P + "outing4.webp", alt: "蔬適 BBQ" }
       ]
     },
 

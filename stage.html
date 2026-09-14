@@ -86,7 +86,7 @@
   .cover__sub{
     margin:0;
     font-size:clamp(1.6rem,6vmin,4.6rem);
-    font-weight:900;color:var(--flame);letter-spacing:.3em;
+    font-weight:900;color:var(--ink);letter-spacing:.3em;
     padding-left:.3em;
   }
 
@@ -205,7 +205,19 @@
   .screen--dense .huge{font-size:clamp(2.4rem,10vmin,8rem);}
   .screen--dense .big{font-size:clamp(1.8rem,5.6vmin,4.2rem);}
   .screen--dense .lede{font-size:clamp(.95rem,2.4vmin,1.7rem);max-width:44em;}
-  .screen--dense .scan .qr{width:min(17vmin,10rem);}
+
+  /* 三隻猴子規則：只排一種語言，所以字和 QR 都放得比原本大 */
+  .screen--dense .scan .qr{width:min(26vmin,15rem);}
+  .screen--dense .rules__lede{font-size:clamp(1.1rem,3.1vmin,2.3rem);max-width:40em;}
+  .screen--dense .role__n{font-size:clamp(1.3rem,3.8vmin,2.7rem);}
+  .screen--dense .role__r{font-size:clamp(1rem,2.65vmin,1.9rem);}
+  .screen--dense .scan__t{font-size:clamp(1.05rem,3vmin,2.1rem);}
+  .screen--dense .scan__t b{font-size:clamp(1.2rem,3.6vmin,2.6rem);}
+  /* ---------- 照片牆那幾頁 ----------
+     標題跟其他頁一樣大（不套 dense），上面留一段空白，
+     標題才不會頂在畫面最上緣——照片牆會把剩下的高度全部吃掉。 */
+  .screen--wall{padding-top:7vmin;}
+  .screen--wall .lede{font-size:clamp(1rem,2.6vmin,1.8rem);max-width:44em;}
 
   .wall{
     display:flex;flex-wrap:wrap;
@@ -234,6 +246,43 @@
     padding:2rem;text-align:center;
     font-size:clamp(1rem,2.6vmin,1.8rem);color:var(--ink-2);
   }
+
+  /* ---------- 社員權益 ---------- */
+  .fee{
+    display:inline-flex;align-items:baseline;gap:1.2vmin;
+    padding:1.2vmin 4vmin;border-radius:999px;
+    background:var(--gold);color:#fff;
+    font-weight:900;
+  }
+  .fee span{font-size:clamp(1rem,2.8vmin,2rem);letter-spacing:.1em;}
+  .fee b{font-size:clamp(1.8rem,6vmin,4.4rem);}
+
+  .perks{
+    list-style:none;margin:2.5vmin 0 0;padding:0;
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:2.4vmin;width:min(100%,72rem);
+  }
+  .perks li{
+    background:rgba(255,255,255,.8);
+    border:.35vmin solid var(--paper-3);
+    border-radius:1.6rem;
+    padding:3vmin 2vmin;
+  }
+  .perks .e{font-size:clamp(2.4rem,8vmin,5.4rem);line-height:1.1;}
+  .perks .t{
+    margin-top:1vmin;
+    font-size:clamp(1.2rem,3.6vmin,2.6rem);font-weight:900;
+  }
+
+  /* ---------- 中英切換按鈕 ---------- */
+  .langbtn{
+    font:inherit;font-weight:900;cursor:pointer;
+    padding:.8vmin 2.4vmin;border-radius:999px;
+    border:.3vmin solid var(--paper-3);
+    background:rgba(255,255,255,.85);color:var(--ink-2);
+    font-size:clamp(.9rem,2.2vmin,1.5rem);letter-spacing:.08em;
+  }
+  .langbtn:hover{border-color:var(--ink-2);color:var(--ink);}
 
   /* ---------- 老師 ---------- */
   .teacher{
@@ -312,6 +361,7 @@
   .won small{font-weight:700;opacity:.7;}
 
   /* ---------- 大合照 ---------- */
+  .bigemoji{font-size:clamp(3rem,14vmin,10rem);line-height:1;}
   .count{
     font-size:clamp(6rem,40vmin,30rem);font-weight:900;line-height:1;
     color:var(--flame);animation:pop .4s ease;
@@ -342,7 +392,7 @@
   .ends{
     display:flex;align-items:stretch;justify-content:center;
     gap:4vmin;margin-top:2vmin;
-    width:100%;height:52vh;
+    width:100%;height:60vh;
   }
   .end{
     display:flex;flex-direction:column;align-items:center;
@@ -361,9 +411,9 @@
   /* QR 方方正正就好，不用跟著卡片一起拉高 */
   .end--qr .end__pic{flex:0 0 auto;align-self:center;}
 
-  .end--qr{flex:0 0 20%;}
-  .end--promo{flex:0 0 44%;}
-  .end--cal{flex:0 0 30%;}
+  .end--qr{flex:0 0 17%;}
+  .end--promo{flex:0 0 36%;}
+  .end--cal{flex:0 0 41%;}
 
   /* 三欄兩排，六張宣傳圖各自照原比例縮進格子裡 */
   .promo{
@@ -657,8 +707,10 @@
     monkey: "三隻猴子",
     club: "社團介紹",
     relief: "賑災",
-    global: "國外交流",
+    global: "海外交流",
+    outing: "社遊",
     kitchen: "開伙",
+    perks: "社員權益",
     teacher: "指導老師",
     lottery: "抽獎",
     photo: "大合照"
@@ -677,8 +729,11 @@
     add({ part: "club", kind: "club", ci: n, label: "社團介紹　" + c.title });
   });
   add({ part: "relief", kind: "wall", set: "relief", label: "★ 賑災現場" });
-  add({ part: "global", kind: "wall", set: "global", label: "★ 海外義診交流" });
+  add({ part: "global", kind: "wall", set: "global", label: "★ 海外交流" });
+  add({ part: "outing", kind: "wall", set: "outing", label: "★ 社遊" });
   add({ part: "kitchen", kind: "wall", set: "kitchen", label: "★ 開伙的樣子" });
+
+  add({ part: "perks", kind: "perks", label: "社員權益" });
 
   add({ part: "teacher", kind: "teacherTitle", label: "指導老師介紹 標題" });
   TEACHERS.forEach(function (t, n) {
@@ -699,6 +754,7 @@
   var lottery = {};                             // 名單、獎項、已中獎
   var timer = { left: 0, total: 0, running: false };
   var photoCount = 0;
+  var lang = "zh";            // 三隻猴子規則那一頁的顯示語言
 
   // 每個節點開機時的第一次回呼只拿來抓基準，不當成指令
   var ready = { control: false, lottery: false };
@@ -761,8 +817,8 @@
 
     el.className = "screen" +
       (sc.kind === "club" ? " screen--full" : "") +
-      (sc.kind === "wall" || sc.kind === "monkeyRules" || sc.kind === "lotteryIntro"
-        ? " screen--dense" : "");
+      (sc.kind === "monkeyRules" || sc.kind === "lotteryIntro" ? " screen--dense" : "") +
+      (sc.kind === "wall" ? " screen--wall" : "");
     el.innerHTML = VIEWS[sc.kind] ? VIEWS[sc.kind](sc) : "";
     if (AFTER[sc.kind]) { AFTER[sc.kind](sc, el); }
 
@@ -773,7 +829,8 @@
   function renderBar() {
     var sc = S[i];
     var extra = "";
-    if (sc.kind === "monkeyPlay") { extra = "　<kbd>T</kbd> 計時 90 秒　<kbd>R</kbd> 重設"; }
+    if (sc.kind === "monkeyRules") { extra = "　<kbd>L</kbd> 中／英切換"; }
+    else if (sc.kind === "monkeyPlay") { extra = "　<kbd>T</kbd> 計時 90 秒　<kbd>R</kbd> 重設"; }
     else if (sc.kind === "photo") { extra = "　<kbd>T</kbd> 開始 3・2・1"; }
     else if (sc.kind === "lotteryDraw") { extra = "　<kbd>T</kbd> 抽一位　<kbd>R</kbd> 清掉中獎者"; }
 
@@ -794,45 +851,58 @@
       '</div>' +
       '<h1 class="huge">台科大<span class="mark">崇德志工社</span>' +
         '<span class="en">NTUST Chongde Volunteer Club</span></h1>' +
-      '<p class="cover__sub">相見歡<span class="en">Welcome Party</span></p>' +
-      '<p class="lede">' +
-        biHtml("今天不點名、不自我介紹一輪。<br>我們用玩的，把彼此記起來。",
-               "No roll call, no round of introductions. We will play, and remember each other that way.") +
-      "</p>";
+      '<p class="cover__sub">茶會<span class="en">Welcome Party</span></p>';
   };
 
 
   /* ---------- 三隻猴子 ---------- */
+  /**
+   * 規則這一頁字最多。中英兩份一起排，字就得縮到後排看不清楚，
+   * 所以改成一次只顯示一種語言，用按鈕（或 L 鍵）切換，字級就放得開。
+   */
   VIEWS.monkeyRules = function () {
     var url = NET.url("phone.html");
     var qr = "";
     try { qr = QR.svg(url); } catch (e) { qr = "QR 產生失敗"; }
 
+    var zh = lang === "zh";
+    var T = zh
+      ? {
+          title: "三隻猴子",
+          lede: "三個人一組站成一直線。<b>題目只有比劃猴的手機看得到</b>，" +
+                "投影幕上不會出現，答案不是用講的，是<b>用畫的</b>。",
+          scanT: "🙊 比劃猴掃這裡",
+          scanB: "題目會出現在你的手機上，跟著主持人換題。<br>" +
+                 "傳話猴和猜題猴請不要偷看別人的手機。",
+          btn: "English"
+        }
+      : {
+          title: "Three Monkeys",
+          lede: "Three to a group, in a line. <b>Only the Mime's phone shows the word</b> — " +
+                "it never appears on screen. The answer is <b>drawn, not spoken</b>.",
+          scanT: "🙊 The Mime scans here",
+          scanB: "The word shows up on your phone and changes as the host moves on.<br>" +
+                 "Teller and Guesser: no peeking.",
+          btn: "中文"
+        };
+
     return '' +
-      '<h1 class="big">三隻猴子<span class="en">Three Monkeys</span></h1>' +
-      '<p class="lede">' +
-        biHtml("三個人一組站成一直線。<b>題目只有比劃猴的手機看得到</b>，" +
-               "投影幕上不會出現，答案不是用講的，是<b>用畫的</b>。",
-               "Three to a group, in a line. Only the Mime's phone shows the word — " +
-               "it never appears on screen. The answer is drawn, not spoken.") +
-      "</p>" +
+      '<h1 class="big">' + esc(T.title) + "</h1>" +
+      '<p class="lede rules__lede">' + T.lede + "</p>" +
       '<div class="roles">' +
         MONKEY.ROLES.map(function (r) {
           return '<div class="role"><div class="role__e">' + r.emoji + '</div>' +
-            '<div class="role__n">' + bi(r.name, r.en) + '</div>' +
-            '<div class="role__r">' + bi(r.rule, r.ruleEn) + '</div></div>';
+            '<div class="role__n">' + esc(zh ? r.name : r.en) + '</div>' +
+            '<div class="role__r">' + esc(zh ? r.rule : r.ruleEn) + '</div></div>';
         }).join("") +
       '</div>' +
       '<div class="scan">' +
         '<div class="qr">' + qr + '</div>' +
-        '<div class="scan__t"><b>' + bi("🙊 比劃猴掃這裡", "The Mime scans here") + "</b>" +
-          biHtml("題目會出現在你的手機上，跟著主持人換題。<br>" +
-                 "傳話猴和猜題猴請不要偷看別人的手機。",
-                 "The word shows up on your phone and changes as the host moves on. " +
-                 "Teller and Guesser: no peeking.") +
+        '<div class="scan__t"><b>' + esc(T.scanT) + "</b>" + T.scanB +
           '<div class="scan__u">' + esc(url) + '</div>' +
         '</div>' +
-      '</div>';
+      '</div>' +
+      '<button type="button" class="langbtn" id="b-lang">🌐 ' + esc(T.btn) + "</button>";
   };
 
   VIEWS.monkeyPlay = function () {
@@ -988,6 +1058,24 @@
     if (!pending) { layout(); }
   };
 
+  /* ---------- 社員權益 ---------- */
+  VIEWS.perks = function () {
+    var rows = [
+      ["🍲", "免費開伙", "Free community meals"],
+      ["🎟️", "優先報名活動", "First in line for events"],
+      ["👕", "免費社服", "A club shirt on us"]
+    ];
+    return '' +
+      '<h1 class="huge">社員權益<span class="en">Member Benefits</span></h1>' +
+      '<p class="fee"><span>社費 Membership</span><b>NT$300</b></p>' +
+      '<ul class="perks">' +
+        rows.map(function (r) {
+          return '<li><div class="e">' + r[0] + "</div>" +
+            '<div class="t">' + bi(r[1], r[2]) + "</div></li>";
+        }).join("") +
+      "</ul>";
+  };
+
   /* ---------- 指導老師 ---------- */
   VIEWS.teacherTitle = function () {
     return '<h1 class="huge">指導老師介紹' +
@@ -1092,7 +1180,7 @@
       return '<div class="count">' + (photoCount === 4 ? "📸" : photoCount) + '</div>';
     }
     return '' +
-      '<p class="eyebrow">📸</p>' +
+      '<div class="bigemoji">📸</div>' +
       '<h1 class="huge">大合照<span class="en">Group Photo</span></h1>';
   };
 
@@ -1256,6 +1344,8 @@
 
     if (k === "f") { toggleFull(); return; }
 
+    if (k === "l" && sc.kind === "monkeyRules") { toggleLang(); return; }
+
     if (k === "t") {
       if (sc.kind === "photo") { runPhotoCountdown(); return; }
       if (sc.kind === "lotteryDraw") { drawOne(); return; }
@@ -1321,6 +1411,16 @@
   $("b-next").addEventListener("click", function () { go(1); });
   $("b-menu").addEventListener("click", toggleMenu);
   $("b-full").addEventListener("click", toggleFull);
+
+  // 規則頁的中英切換：按鈕或 L 鍵都行
+  function toggleLang() {
+    lang = lang === "zh" ? "en" : "zh";
+    render();
+  }
+
+  document.addEventListener("click", function (e) {
+    if (e.target.closest("#b-lang")) { toggleLang(); }
+  });
 
   $("menu").addEventListener("click", function (e) {
     var li = e.target.closest("[data-jump]");
