@@ -83,8 +83,10 @@
       titleAt: { l: 8.84, t: 3.5, w: 84.38 },
       // 照片下緣在 86.5%，狗整隻放在那條空白帶裡，不要被壓掉半顆頭
       deco: [
-        { kind: "dog", l: 6, t: 86.8, w: 11, h: 13 },
-        { kind: "dog", l: 83, t: 86.8, w: 11, h: 13 }
+        { kind: "paw", l: 5, t: 87.5, w: 9, h: 11 },
+        { kind: "paw", l: 15, t: 89.5, w: 7, h: 9 },
+        { kind: "paw", l: 78, t: 89.5, w: 7, h: 9 },
+        { kind: "paw", l: 86, t: 87.5, w: 9, h: 11 }
       ],
       shots: [
         { src: P + "life1.webp", alt: "生命教育活動現場", l: 3.55, t: 31.50, w: 44.32, h: 54.96 },
@@ -191,6 +193,7 @@
 
     kitchen: {
       perRow: 3,
+      fill: true,
       title: "蔬食料理社聚",
       titleEn: "Vegetarian Cook & Eat",
       lede: "每週三 18:30，蔬食開伙，歡迎下課後來用餐。",

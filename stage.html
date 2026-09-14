@@ -129,7 +129,7 @@
     display:flex;align-items:center;justify-content:center;gap:2vmin;
     width:min(100%,56rem);
     margin:1vmin 0;
-    padding:5vmin 4vmin;
+    padding:2.6vmin 4vmin;
     border-radius:2rem;
     border:.5vmin dashed var(--paper-3);
     background:rgba(255,255,255,.55);
@@ -144,7 +144,7 @@
 
   .timer{
     font-variant-numeric:tabular-nums;
-    font-size:clamp(2rem,9vmin,7rem);font-weight:900;line-height:1;
+    font-size:clamp(3rem,15vmin,12rem);font-weight:900;line-height:1;
     color:var(--teal);
   }
   .timer.warn{color:var(--err);}
@@ -247,6 +247,22 @@
     flex:1 1 0;min-height:0;
     margin-top:.4rem;
   }
+  /* 填滿版：等分格線，照片裁切填滿每一格 */
+  .wallgrid{
+    flex:1 1 0;min-height:0;
+    display:grid;
+    grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));
+    /* 列高也要等分，不然每一列會用圖片的原始高度，整個撐爆容器 */
+    grid-auto-rows:minmax(0,1fr);
+    gap:.6rem;width:100%;max-width:96rem;
+    margin-top:.4rem;
+  }
+  .wallgrid img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    border:.28rem solid #fff;border-radius:.35rem;
+    box-shadow:0 .3rem .8rem rgba(90,52,18,.28);
+  }
+
   .wall figure{
     flex:0 0 auto;margin:0;
     border:.28rem solid #fff;
@@ -398,6 +414,7 @@
   }
   .askqr .qr{width:min(34vmin,20rem);flex:none;}
   .askqr--big .qr{width:min(46vmin,28rem);}
+  .askqr .qr img{display:block;width:100%;height:auto;}
   .askqr__t{font-size:clamp(1rem,2.7vmin,1.9rem);line-height:1.6;color:var(--ink-2);}
   .askqr__t b{display:block;color:var(--ink);font-size:clamp(1.1rem,3.2vmin,2.3rem);}
   .askqr__t b .en{font-size:.62em;margin-top:.4em;}
@@ -442,9 +459,8 @@
   /* QR 方方正正就好，不用跟著卡片一起拉高 */
   .end--qr .end__pic{flex:0 0 auto;align-self:center;}
 
-  .end--promo{flex:0 0 44%;}
-  .end--qr{flex:0 0 17%;}
-  .end--cal{flex:0 0 28%;}
+  .end--promo{flex:0 0 66%;}
+  .end--qr{flex:0 0 24%;}
 
   /* 近期活動：三欄兩排，六張各自照原比例縮進格子裡 */
   .promowall{
@@ -547,6 +563,7 @@
   <button type="button" id="b-next">下一步 →</button>
   <button type="button" id="b-menu">跳頁 (Esc)</button>
   <button type="button" id="b-full">全螢幕 (F)</button>
+  <button type="button" id="b-mute">🔊 音樂 (M)</button>
   <span class="grow" id="barinfo"></span>
   <span class="net" id="netinfo">連線中…</span>
 </div>
@@ -724,6 +741,18 @@
           '<rect x="24" y="56" width="10" height="4" rx="2" transform="rotate(35 29 58)"/>' +
           '<rect x="63" y="58" width="10" height="4" rx="2" transform="rotate(-15 68 60)"/>' +
           '<rect x="44" y="18" width="10" height="4" rx="2" transform="rotate(8 49 20)"/>' +
+        "</g>" +
+      "</svg>",
+
+    paw:
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<g fill="#A9713C">' +
+          '<ellipse cx="26" cy="36" rx="10" ry="13" transform="rotate(-18 26 36)"/>' +
+          '<ellipse cx="45" cy="25" rx="9.5" ry="13" transform="rotate(-6 45 25)"/>' +
+          '<ellipse cx="65" cy="27" rx="9.5" ry="13" transform="rotate(8 65 27)"/>' +
+          '<ellipse cx="82" cy="41" rx="9.5" ry="12.5" transform="rotate(22 82 41)"/>' +
+          '<path d="M50 52 q18 0 24 14 q6 14 -6 22 q-8 5 -18 5 t-18 -5 q-12 -8 -6 -22 ' +
+            'q6 -14 24 -14z"/>' +
         "</g>" +
       "</svg>",
 
@@ -940,6 +969,7 @@
     else if (sc.kind === "monkeyPlay") { extra = "　<kbd>T</kbd> 計時 90 秒　<kbd>R</kbd> 重設"; }
     else if (sc.kind === "photo") { extra = "　<kbd>T</kbd> 開始 3・2・1"; }
     else if (sc.kind === "lotteryDraw") { extra = "　<kbd>T</kbd> 抽一位　<kbd>R</kbd> 清掉中獎者"; }
+    extra += "　<kbd>M</kbd> 配樂";
 
     $("barinfo").innerHTML =
       esc(PARTS[sc.part]) + "　·　" + esc(sc.label) +
@@ -1024,6 +1054,7 @@
             '<span class="en">Word ' + (at + 1) + " of " + terms.length + "</span>"
           : bi("後臺還沒有題目", "No words set yet")) +
       '</div>' +
+      '<div class="timer' + timerClass() + '" id="timer">' + timerText() + "</div>" +
       '<div class="secret"><span>🙊</span>' +
         bi("題目在比劃猴的手機上", "The word is on the Mime's phone") +
       "</div>" +
@@ -1032,8 +1063,7 @@
           return '<span>' + r.emoji + ' <b>' + esc(r.name) + "</b>：" + esc(r.short) +
             '<span class="en">' + esc(r.en) + " · " + esc(r.shortEn) + "</span></span>";
         }).join("") +
-      '</div>' +
-      '<div class="timer' + timerClass() + '" id="timer">' + timerText() + '</div>';
+      "</div>";
   };
 
   function timerClass() {
@@ -1087,6 +1117,17 @@
         '<h1 class="big">' + bi(set.title || "", set.titleEn) + "</h1>" +
         (set.lede ? '<p class="lede">' + biHtml(set.lede, set.ledeEn) + "</p>" : "") +
       "</div>" +
+      (set.fill
+        // 等高排版填不滿寬度（照片比例固定，排滿高度就一定會留白邊）。
+        // 這一組指定要填滿，改成等分格線 + object-fit:cover，代價是左右會裁掉一點。
+        ? '<div class="wallgrid" style="--cols:' + (set.perRow || 3) + '">' +
+            items.map(function (ph) {
+              return '<img src="' + esc(ph.src) + '" alt="' + esc(ph.alt || "") + '" ' +
+                'onerror="this.remove()">';
+            }).join("") +
+          "</div>"
+        : "") +
+      (set.fill ? "" :
       '<div class="wall" id="wall" data-per-row="' + (set.perRow || 0) + '">' +
         items.map(function (ph, n) {
           // perRow 有指定的話，每 perRow 張插一個撐滿寬度的空元素把列斷開，
@@ -1096,7 +1137,7 @@
           return br + '<figure class="' + (n % 2 ? "tiltB" : "tiltA") + '">' +
             '<img src="' + esc(ph.src) + '" alt="' + esc(ph.alt || "") + '"></figure>';
         }).join("") +
-      "</div>";
+      "</div>");
   };
 
   AFTER.wall = function (sc, el) {
@@ -1130,6 +1171,12 @@
         wall.textContent = "照片還沒放進 media/photos/";
         return;
       }
+
+      // layout() 會被呼叫不只一次（圖片載入完還會再跑一次）。
+      // 下面會把 wall 的高度縮成內容高度，所以量之前一定要先還原，
+      // 不然第二次會拿縮過的高度再縮一次，照片會越縮越小。
+      wall.style.flex = "";
+      wall.style.height = "";
 
       var W = wall.clientWidth, H = wall.clientHeight;
       var cs = getComputedStyle(live[0]);
@@ -1185,6 +1232,12 @@
 
       var px = Math.max(1, Math.floor(Math.min(best, H - frame)));
       shots.forEach(function (sh) { sh.img.style.height = px + "px"; });
+
+      // 照片排完通常用不到整塊高度，剩下的空白會卡在標題和照片之間。
+      // 把容器縮成內容的實際高度，整組就會跟標題一起置中。
+      var rows = rowsAt(px) || 1;
+      wall.style.flex = "0 0 auto";
+      wall.style.height = Math.ceil(rows * (px + frame) + (rows - 1) * gap) + "px";
     }
 
     if (!pending) { layout(); }
@@ -1259,24 +1312,18 @@
 
   /* ---------- 心得回饋 ---------- */
   VIEWS.feedback = function () {
-    var url = (window.CDVC_CONFIG || {}).feedbackUrl || "";
-    var qr = "";
-    try { qr = url ? QR.svg(url) : ""; } catch (e) { qr = ""; }
-
     return '' +
       '<h1 class="huge">心得回饋<span class="en">Tell us how it went</span></h1>' +
-      (qr
-        ? '<div class="askqr askqr--big">' +
-            '<div class="qr">' + qr + "</div>" +
-            '<div class="askqr__t"><b>' +
-              bi("掃這裡填回饋", "Scan to fill in the form") + "</b>" +
-              biHtml("兩分鐘就好，寫什麼都可以。<br>你的一句話會決定下次辦什麼。",
-                     "Two minutes. Anything you write helps us plan the next one.") +
-              '<div class="askqr__u">' + esc(url) + "</div>" +
-            "</div>" +
-          "</div>"
-        : '<p class="lede quiet">回饋表單的網址還沒填。<br>' +
-          "到 <b>assets/settings.js</b> 把 <b>feedbackUrl</b> 填進去，這裡就會長出 QR。</p>");
+      '<div class="askqr askqr--big">' +
+        '<div class="qr">' +
+          '<img src="assets/feedback-qr.webp" alt="心得回饋表單 QR code" onerror="this.remove()">' +
+        "</div>" +
+        '<div class="askqr__t"><b>' +
+          bi("掃這裡填回饋", "Scan to fill in the form") + "</b>" +
+          biHtml("兩分鐘就好，寫什麼都可以。<br>你的一句話會決定下次辦什麼。",
+                 "Two minutes. Anything you write helps us plan the next one.") +
+        "</div>" +
+      "</div>";
   };
 
   /* ---------- 抽獎 ---------- */
@@ -1361,9 +1408,11 @@
 
   /* ---------- 結束卡 ---------- */
   /* 這學期的活動宣傳圖，排法照迎新最後一頁 */
+  /* 照活動日期排：中秋素烤 9/19、甜甜圈 9/23、迎新淨灘 10/3、
+     戳戳繡 10/7、鼠鼠志工 11/21、擴香石 11/25 */
   var PROMOS = [
-    "orientcamp", "punchneedle", "rathero",
-    "aromastone", "donut", "midmoon"
+    "midmoon", "donut", "orientcamp",
+    "punchneedle", "rathero", "aromastone"
   ];
 
   VIEWS.outro = function () {
@@ -1392,20 +1441,13 @@
               return '<img src="assets/' + n + '.webp" alt="近期活動" onerror="this.remove()">';
             }).join("") +
           "</div>" +
-          '<div class="end__title">近期活動<small>Coming up</small></div>' +
         "</div>" +
         (qr
           ? '<div class="end end--qr">' +
               '<div class="end__pic"><div class="qr">' + qr + "</div></div>" +
-              '<div class="end__title">傳送門<small>Portal</small></div>' +
+              '<div class="end__title">報名傳送門<small>Sign up</small></div>' +
             "</div>"
           : "") +
-        '<div class="end end--cal">' +
-          '<div class="end__pic">' +
-            '<img src="assets/calendar.webp" alt="這學期的活動行事曆" onerror="this.remove()">' +
-          "</div>" +
-          '<div class="end__title">行事曆<small>Calendar</small></div>' +
-        "</div>" +
       "</div>";
   };
 
@@ -1507,6 +1549,7 @@
      ============================================================ */
   document.addEventListener("keydown", function (e) {
     var sc = S[i];
+    startMusic();          // 被瀏覽器擋掉的話，主持人一按鍵就補播
 
     if (e.key === "Escape") {
       e.preventDefault();
@@ -1528,6 +1571,8 @@
     var k = e.key.toLowerCase();
 
     if (k === "f") { toggleFull(); return; }
+
+    if (k === "m") { toggleMute(); return; }
 
     if (k === "l" && sc.kind === "monkeyRules") { toggleLang(); return; }
 
@@ -1579,6 +1624,47 @@
   }
 
   /* ============================================================
+     配樂
+
+     整場一首，翻頁不中斷。瀏覽器規定要先有互動才能播，
+     所以第一次出聲是在主持人按下第一個鍵（或點畫面）之後。
+     ============================================================ */
+  var MUSIC_SRC = "assets/volunteer.mp3";
+  var VOLUME = 0.28;
+  var track = null;
+  var muted = false;
+
+  function paintMute() {
+    var b = $("b-mute");
+    b.textContent = (muted ? "🔇" : "🔊") + " 音樂 (M)";
+    b.title = muted ? "已靜音" : "播放中：" + MUSIC_SRC.split("/").pop();
+  }
+
+  function startMusic() {
+    if (muted) { return; }
+    if (!track) {
+      track = new Audio(MUSIC_SRC);
+      track.loop = true;
+      track.preload = "auto";
+      track.volume = VOLUME;
+    }
+    if (track.paused) {
+      track.play()["catch"](function () {
+        /* 還沒有互動就被擋掉，下一次按鍵會再試一次 */
+      });
+    }
+  }
+
+  function toggleMute() {
+    muted = !muted;
+    if (muted && track) { track.pause(); }
+    else { startMusic(); }
+    paintMute();
+  }
+
+  paintMute();
+
+  /* ============================================================
      滑鼠、按鈕
      ============================================================ */
   var hideAt = null;
@@ -1596,6 +1682,7 @@
   $("b-next").addEventListener("click", function () { go(1); });
   $("b-menu").addEventListener("click", toggleMenu);
   $("b-full").addEventListener("click", toggleFull);
+  $("b-mute").addEventListener("click", toggleMute);
 
   // 規則頁的中英切換：按鈕或 L 鍵都行
   function toggleLang() {
