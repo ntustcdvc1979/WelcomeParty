@@ -149,6 +149,67 @@
   .timer.warn{color:var(--err);}
   .timer.idle{opacity:.28;}
 
+  /* ---------- 社團介紹：照 pptx 排的拼貼 ---------- */
+  .screen--full{display:block;padding:2vmin;}
+  .collage{
+    position:relative;
+    /* 直接填滿畫面區域。原稿是 20 x 11.25 吋（剛好 16:9），投影幕也是 16:9，
+       所以座標對得上；真的接到別的比例，照片會跟著一起被拉伸一點點，
+       但每一張都是 object-fit:cover，不會變形。
+
+       這裡刻意不用 aspect-ratio 去框比例：寬高都靠父層決定，尺寸就不會
+       回頭依賴內容，下面那個 container-type 才不會跟百分比寬度打架
+       （會互相等對方算完，整塊縮成 0）。 */
+    width:100%;
+    height:100%;
+    overflow:hidden;
+  }
+  .collage img{
+    position:absolute;
+    object-fit:cover;
+    border-radius:.4rem;
+    box-shadow:0 .5vmin 1.4vmin rgba(64,38,15,.24);
+  }
+  .collage h1{
+    position:absolute;
+    margin:0;
+    font-weight:900;
+    line-height:1.2;
+    color:var(--ink);
+    /* pptx 是 72pt 排在 11.25 吋高的版面上，換算大約是版面高度的 8.9% */
+    font-size:clamp(1.5rem,4.9vw,5.6rem);
+  }
+  @supports (container-type:size){
+    .collage{container-type:size;}
+    .collage h1{font-size:8.9cqh;}
+  }
+
+  /* ---------- 照片牆 ---------- */
+  .wall{
+    display:flex;flex-wrap:wrap;
+    justify-content:center;align-content:center;
+    gap:.7rem;
+    width:100%;max-width:92rem;
+    height:62vh;
+    margin-top:.8rem;
+  }
+  .wall figure{
+    flex:0 0 auto;margin:0;
+    border:.28rem solid #fff;
+    border-radius:.35rem;
+    box-shadow:0 .3rem .8rem rgba(90,52,18,.28);
+    background:var(--paper-2);
+    line-height:0;
+  }
+  .wall figure:nth-child(odd){transform:rotate(-.6deg);}
+  .wall figure:nth-child(even){transform:rotate(.6deg);}
+  .wall img{display:block;height:100%;width:auto;}
+  .wall--empty{
+    display:block;height:auto;
+    padding:2rem;text-align:center;
+    font-size:clamp(1rem,2.6vmin,1.8rem);color:var(--ink-2);
+  }
+
   /* ---------- 老師 ---------- */
   .teacher{
     display:flex;align-items:center;gap:5vmin;
@@ -308,6 +369,7 @@
 <script src="assets/firebase-config.js"></script>
 <script src="assets/qrcode.js"></script>
 <script src="assets/monkeys-data.js"></script>
+<script src="assets/photos-data.js"></script>
 <script src="assets/teachers-data.js"></script>
 <script src="assets/net.js"></script>
 <script>
@@ -318,6 +380,8 @@
   var QR = window.CDVC_QR;
   var MONKEY = window.CDVC_MONKEYS;
   var TEACHERS = (window.CDVC_TEACHERS || {}).TEACHERS || [];
+  var CLUB = (window.CDVC_PHOTOS || {}).CLUB || [];
+  var WALLS = (window.CDVC_PHOTOS || {}).WALLS || {};
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -333,6 +397,10 @@
   var PARTS = {
     open: "開場",
     monkey: "三隻猴子",
+    club: "社團介紹",
+    relief: "賑災",
+    global: "國外交流",
+    kitchen: "開伙",
     teacher: "指導老師",
     lottery: "抽獎",
     photo: "大合照"
@@ -346,6 +414,14 @@
 
   add({ part: "monkey", kind: "monkeyRules", label: "三隻猴子 規則・比劃猴掃 QR" });
   add({ part: "monkey", kind: "monkeyPlay", label: "★ 三隻猴子 進行中" });
+
+  // 社團介紹 → 賑災 → 國外交流 → 開伙 → 指導老師
+  CLUB.forEach(function (c, n) {
+    add({ part: "club", kind: "club", ci: n, label: "社團介紹　" + c.title });
+  });
+  add({ part: "relief", kind: "wall", set: "relief", label: "★ 賑災現場" });
+  add({ part: "global", kind: "wall", set: "global", label: "★ 海外義診交流" });
+  add({ part: "kitchen", kind: "wall", set: "kitchen", label: "★ 開伙的樣子" });
 
   add({ part: "teacher", kind: "teacherTitle", label: "指導老師介紹 標題" });
   TEACHERS.forEach(function (t, n) {
@@ -424,7 +500,12 @@
      ============================================================ */
   function render() {
     var sc = S[i];
-    $("screen").innerHTML = VIEWS[sc.kind] ? VIEWS[sc.kind](sc) : "";
+    var el = $("screen");
+
+    el.className = "screen" + (sc.kind === "club" ? " screen--full" : "");
+    el.innerHTML = VIEWS[sc.kind] ? VIEWS[sc.kind](sc) : "";
+    if (AFTER[sc.kind]) { AFTER[sc.kind](sc, el); }
+
     renderBar();
     broadcast();
   }
@@ -442,6 +523,7 @@
   }
 
   var VIEWS = {};
+  var AFTER = {};
 
   /* ---------- 開場 ---------- */
   VIEWS.cover = function () {
@@ -458,13 +540,14 @@
   VIEWS.agenda = function () {
     var rows = [
       ["🙈", "三隻猴子", "比手畫腳、傳話、閉眼作畫，一次搞定破冰"],
+      ["🤝", "社團介紹", "我們平常在做的事：志工、科學營、社課、賑災、國外交流、開伙"],
       ["🎓", "指導老師", "社團背後一直在的人"],
       ["🎁", "抽獎", "名單都在裡面了，看誰運氣好"],
       ["📸", "大合照", "今天的證據"]
     ];
     return '' +
       '<p class="eyebrow">今天的流程</p>' +
-      '<h1 class="big">四件事，一個下午</h1>' +
+      '<h1 class="big">五件事，一個下午</h1>' +
       '<ul class="agenda">' +
         rows.map(function (r) {
           return '<li><span class="e">' + r[0] + '</span>' +
@@ -530,6 +613,114 @@
     var s = timer.total ? timer.left : 90;
     return ("0" + Math.floor(s / 60)).slice(-2) + ":" + ("0" + (s % 60)).slice(-2);
   }
+
+  /* ---------- 社團介紹 ---------- */
+  VIEWS.club = function (sc) {
+    var c = CLUB[sc.ci] || { shots: [], titleAt: {} };
+    var t = c.titleAt || {};
+
+    return '<div class="collage">' +
+      c.shots.map(function (s) {
+        return '<img src="' + esc(s.src) + '" alt="' + esc(s.alt || "") + '" ' +
+          'onerror="this.remove()" style="' +
+          "left:" + s.l + "%;top:" + s.t + "%;width:" + s.w + "%;height:" + s.h + "%" +
+          '">';
+      }).join("") +
+      '<h1 style="' +
+        "left:" + (t.l || 0) + "%;top:" + (t.t || 0) + "%;width:" + (t.w || 100) + "%;" +
+        "text-align:" + (c.align === "center" ? "center" : "left") +
+      '">' + esc(c.title) + "</h1>" +
+    "</div>";
+  };
+
+  /* ---------- 照片牆 ---------- */
+  VIEWS.wall = function (sc) {
+    var set = WALLS[sc.set];
+    var items = (set && set.items) || [];
+
+    if (!items.length) {
+      return '<p class="lede wall--empty">這一組還沒有照片。把檔案放進 media/photos/，' +
+             "再到 assets/photos-data.js 補上清單。</p>";
+    }
+
+    return '' +
+      '<p class="eyebrow">' + esc(set.eyebrow || "") + "</p>" +
+      '<h1 class="big">' + esc(set.title || "") + "</h1>" +
+      (set.lede ? '<p class="lede" style="margin-top:.6rem">' + set.lede + "</p>" : "") +
+      '<div class="wall" id="wall">' +
+        items.map(function (ph) {
+          return '<figure><img src="' + esc(ph.src) + '" alt="' + esc(ph.alt || "") + '"></figure>';
+        }).join("") +
+      "</div>";
+  };
+
+  AFTER.wall = function (sc, el) {
+    var wall = el.querySelector("#wall");
+    if (!wall) { return; }
+
+    var figs = Array.prototype.slice.call(wall.querySelectorAll("figure"));
+    var pending = figs.length;
+
+    function done() { if (--pending <= 0) { layout(); } }
+
+    figs.forEach(function (fig) {
+      var img = fig.querySelector("img");
+      if (img.complete && img.naturalWidth) { done(); return; }
+      img.addEventListener("load", done);
+      img.addEventListener("error", function () {
+        // 檔案還沒放進去就把那一格收掉，不要留破圖
+        if (fig.parentNode) { fig.parentNode.removeChild(fig); }
+        done();
+      });
+    });
+
+    /**
+     * 等高排版：同一列的照片高度一樣、寬度照原始比例，
+     * 二分搜出「排得下的最大高度」，照片就會剛好鋪滿又不被裁到。
+     */
+    function layout() {
+      var live = Array.prototype.slice.call(wall.querySelectorAll("figure"));
+      if (!live.length) {
+        wall.className = "wall wall--empty";
+        wall.textContent = "照片還沒放進 media/photos/";
+        return;
+      }
+
+      var W = wall.clientWidth, H = wall.clientHeight;
+      var cs = getComputedStyle(live[0]);
+      var frame = parseFloat(cs.borderLeftWidth) * 2;
+      var gap = parseFloat(getComputedStyle(wall).columnGap) || 10;
+
+      var shots = live.map(function (fig) {
+        var img = fig.querySelector("img");
+        var a = (img.naturalWidth && img.naturalHeight) ? img.naturalWidth / img.naturalHeight : 1.5;
+        return { el: fig, img: img, a: a };
+      });
+
+      // 某個高度會排成幾列
+      function rowsAt(h) {
+        var rows = 1, used = 0;
+        for (var n = 0; n < shots.length; n++) {
+          var w = shots[n].a * h + frame;
+          if (used > 0 && used + gap + w > W) { rows++; used = w; }
+          else { used = used ? used + gap + w : w; }
+        }
+        return rows;
+      }
+
+      var lo = 40, hi = H, best = 40;
+      for (var k = 0; k < 40; k++) {
+        var mid = (lo + hi) / 2;
+        var r = rowsAt(mid);
+        if (r * (mid + frame) + (r - 1) * gap <= H) { best = mid; lo = mid; }
+        else { hi = mid; }
+      }
+
+      shots.forEach(function (sh) { sh.img.style.height = Math.floor(best) + "px"; });
+    }
+
+    if (!pending) { layout(); }
+  };
 
   /* ---------- 指導老師 ---------- */
   VIEWS.teacherTitle = function () {
