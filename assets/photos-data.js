@@ -49,11 +49,10 @@
     title: "社遊",
     en: "Club Outings",
     align: "center",
-    inlineEn: true,
-    titleAt: { l: 0, t: 1.0, w: 100 },
+    titleAt: { l: 0, t: 0.5, w: 100 },
     shots: [
       { src: P + "outing1.webp", alt: "平溪放天燈", l: 1.6, t: 6.5, w: 30.7, h: 44.0 },
-      { src: P + "outing2.webp", alt: "擎天崗大合照", l: 33.9, t: 15.0, w: 35.4, h: 44.3 },
+      { src: P + "outing2.webp", alt: "擎天崗大合照", l: 33.9, t: 19.0, w: 35.4, h: 40.3 },
       { src: P + "outing4.webp", alt: "蔬適 BBQ", l: 70.8, t: 6.0, w: 27.6, h: 53.2 },
       { src: P + "outing5.webp", alt: "自己包的生菜捲", l: 14.8, t: 60.2, w: 36.5, h: 38.9 },
       { src: P + "outing3.webp", alt: "草地上野餐", l: 58.9, t: 61.6, w: 34.9, h: 37.0 }
@@ -81,16 +80,16 @@
       title: "志工・生命教育",
       en: "Life Education",
       align: "center",
-      titleAt: { l: 8.84, t: 6.5, w: 84.38 },
+      titleAt: { l: 8.84, t: 3.5, w: 84.38 },
       // 照片下緣在 86.5%，狗整隻放在那條空白帶裡，不要被壓掉半顆頭
       deco: [
         { kind: "dog", l: 6, t: 86.8, w: 11, h: 13 },
         { kind: "dog", l: 83, t: 86.8, w: 11, h: 13 }
       ],
       shots: [
-        { src: P + "life1.webp", alt: "生命教育活動現場", l: 3.55, t: 27.35, w: 44.32, h: 59.11 },
-        { src: P + "life2.webp", alt: "生命教育課程", l: 47.87, t: 27.35, w: 24.94, h: 59.11 },
-        { src: P + "life3.webp", alt: "生命教育合影", l: 72.81, t: 27.35, w: 24.94, h: 59.11 }
+        { src: P + "life1.webp", alt: "生命教育活動現場", l: 3.55, t: 31.50, w: 44.32, h: 54.96 },
+        { src: P + "life2.webp", alt: "生命教育課程", l: 47.87, t: 31.50, w: 24.94, h: 54.96 },
+        { src: P + "life3.webp", alt: "生命教育合影", l: 72.81, t: 31.50, w: 24.94, h: 54.96 }
       ]
     },
     {
@@ -99,7 +98,8 @@
       titleAt: { l: 4.00, t: 4.0, w: 37 },
       deco: [
         { kind: "beaker", l: 86.5, t: 62, w: 12, h: 22 },
-        { kind: "rocket", l: 91.5, t: 1, w: 8, h: 15 }
+        { kind: "rocket", l: 91.5, t: 1, w: 8, h: 15 },
+        { kind: "catapult", l: 1.5, t: 70, w: 24, h: 27 }
       ],
       // 原本右上角那張拿掉之後版面空了一塊，三張重新排：
       // 左邊直的一張水火箭，右邊上下兩張橫的
@@ -165,7 +165,7 @@
        沿著白底切成八張分開放，等高排版就會把每一張撐大。
        第一張大合照用的是原始檔，不是從拼貼圖切下來的。 */
     relief: {
-      title: "災難在哪，我們就在哪",
+      title: "災難在哪・我們就在哪",
       titleEn: "Disaster Relief",
       items: [
         { src: P + "relief1.webp", alt: "醫療關懷隊全隊合影" },
@@ -180,7 +180,7 @@
 
     global: {
       perRow: 3,
-      title: "海外交流，開拓視野",
+      title: "海外交流・開拓視野",
       titleEn: "Overseas Exchange",
       items: [
         { src: P + "08.webp", alt: "海外義診服務現場" },

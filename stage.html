@@ -234,10 +234,6 @@
     width:100%;
   }
   .wallhead .lede{text-align:left;max-width:26em;}
-  /* 英文接在中文後面，不另起一行——那一行的高度直接還給照片 */
-  .screen--wall .big .en{
-    display:inline;font-size:.4em;margin:0 0 0 .6em;vertical-align:.12em;
-  }
   .screen--wall .lede{font-size:clamp(1.15rem,3.2vmin,2.4rem);max-width:40em;}
 
   .wall{
@@ -401,6 +397,7 @@
     text-align:left;
   }
   .askqr .qr{width:min(34vmin,20rem);flex:none;}
+  .askqr--big .qr{width:min(46vmin,28rem);}
   .askqr__t{font-size:clamp(1rem,2.7vmin,1.9rem);line-height:1.6;color:var(--ink-2);}
   .askqr__t b{display:block;color:var(--ink);font-size:clamp(1.1rem,3.2vmin,2.3rem);}
   .askqr__t b .en{font-size:.62em;margin-top:.4em;}
@@ -413,11 +410,20 @@
   }
   .endhead .logos img{height:min(11vmin,6rem);}
   .endhead h1{margin:0;}
+  .endnote{
+    margin:.8vmin 0 0;
+    padding:.7vmin 2vmin;
+    border-radius:999px;
+    background:var(--gold);color:#fff;
+    font-size:clamp(.95rem,2.4vmin,1.7rem);font-weight:900;
+    display:inline-block;
+  }
+  .endnote .en{font-size:.68em;margin-top:.2em;opacity:.95;color:#fff;}
 
   .ends{
     display:flex;align-items:stretch;justify-content:center;
     gap:4vmin;margin-top:2vmin;
-    width:100%;height:70vh;
+    width:100%;height:62vh;
   }
   .end{
     display:flex;flex-direction:column;align-items:center;
@@ -490,6 +496,27 @@
   .net.on{color:var(--green);}
   .net.off{color:#F0A0A0;}
 
+  /* ---------- 點開放大的 DM ---------- */
+  .promowall img{cursor:zoom-in;}
+  .lightbox{
+    position:fixed;inset:0;z-index:8;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:2vmin;
+    background:rgba(64,38,15,.93);
+    padding:3vmin;
+    cursor:zoom-out;
+  }
+  .lightbox img{
+    max-width:100%;max-height:88%;
+    width:auto;height:auto;display:block;
+    border-radius:.6rem;
+    box-shadow:0 1.5vmin 4vmin rgba(0,0,0,.45);
+  }
+  .lightbox__hint{
+    margin:0;color:#FDF2D8;opacity:.75;
+    font-size:clamp(.85rem,2vmin,1.3rem);font-weight:800;
+  }
+
   /* ---------- 跳頁選單 ---------- */
   .menu{
     position:fixed;inset:0;z-index:9;
@@ -522,6 +549,11 @@
   <button type="button" id="b-full">全螢幕 (F)</button>
   <span class="grow" id="barinfo"></span>
   <span class="net" id="netinfo">連線中…</span>
+</div>
+
+<div class="lightbox" id="lightbox" hidden>
+  <img id="lightbox-img" src="" alt="">
+  <p class="lightbox__hint">點一下或按 Esc 關閉</p>
 </div>
 
 <div class="menu" id="menu" hidden>
@@ -597,32 +629,35 @@
 
     dog:
       '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
-        // 垂下來的耳朵
-        '<path d="M23 36 q-11 -6 -9 12 q2 18 14 20 z" fill="#A9713C"/>' +
-        '<path d="M77 36 q11 -6 9 12 q-2 18 -14 20 z" fill="#A9713C"/>' +
-        // 頭
-        '<path d="M50 22 q26 0 29 24 q3 26 -12 34 q-9 5 -17 5 t-17 -5 q-15 -8 -12 -34 ' +
-          'q3 -24 29 -24z" fill="#D9A05B"/>' +
-        // 眉心與口鼻的淺色
-        '<ellipse cx="50" cy="68" rx="19" ry="15" fill="#FBEBD2"/>' +
-        '<path d="M50 30 q6 10 5 20 q-5 3 -10 0 q-1 -10 5 -20z" fill="#FBEBD2" opacity=".75"/>' +
+        // 垂耳，從頭的兩側掛下來
+        '<path d="M26 34 q-16 -4 -16 16 q0 20 10 26 q8 4 11 -6 q-8 -14 -5 -36z" ' +
+          'fill="#A9713C" stroke="#8A5A2B" stroke-width="2"/>' +
+        '<path d="M74 34 q16 -4 16 16 q0 20 -10 26 q-8 4 -11 -6 q8 -14 5 -36z" ' +
+          'fill="#A9713C" stroke="#8A5A2B" stroke-width="2"/>' +
+        // 頭：上寬下窄，接到吻部
+        '<path d="M50 20 q23 0 27 20 q3 15 -3 26 q-6 12 -24 12 t-24 -12 ' +
+          'q-6 -11 -3 -26 q4 -20 27 -20z" fill="#D9A05B"/>' +
+        // 額頭的白色縱紋
+        '<path d="M50 22 q5 12 4 22 q-4 3 -8 0 q-1 -10 4 -22z" fill="#FBEBD2"/>' +
+        // 吻部
+        '<ellipse cx="50" cy="69" rx="17" ry="13" fill="#FBEBD2"/>' +
         // 腮紅
-        '<ellipse cx="27" cy="66" rx="6.5" ry="4.2" fill="#E2621C" opacity=".28"/>' +
-        '<ellipse cx="73" cy="66" rx="6.5" ry="4.2" fill="#E2621C" opacity=".28"/>' +
+        '<ellipse cx="26" cy="64" rx="6" ry="4" fill="#E2621C" opacity=".25"/>' +
+        '<ellipse cx="74" cy="64" rx="6" ry="4" fill="#E2621C" opacity=".25"/>' +
         // 眼睛
-        '<ellipse cx="37" cy="55" rx="5.4" ry="6.2" fill="#3A2412"/>' +
-        '<ellipse cx="63" cy="55" rx="5.4" ry="6.2" fill="#3A2412"/>' +
-        '<circle cx="38.9" cy="52.6" r="2" fill="#fff"/>' +
-        '<circle cx="64.9" cy="52.6" r="2" fill="#fff"/>' +
-        // 鼻子
-        '<path d="M44 63 h12 a3.2 3.2 0 0 1 2.4 5.2 l-4.8 5.2 a3.4 3.4 0 0 1 -5.2 0 ' +
-          'l-4.8 -5.2 a3.2 3.2 0 0 1 2.4 -5.2z" fill="#3A2412"/>' +
-        // 嘴與舌頭
-        '<path d="M50 74 v3.5 M50 77.5 q-6 5.5 -11 .5 M50 77.5 q6 5.5 11 .5" ' +
+        '<ellipse cx="38" cy="54" rx="5" ry="6" fill="#3A2412"/>' +
+        '<ellipse cx="62" cy="54" rx="5" ry="6" fill="#3A2412"/>' +
+        '<circle cx="39.8" cy="51.8" r="1.9" fill="#fff"/>' +
+        '<circle cx="63.8" cy="51.8" r="1.9" fill="#fff"/>' +
+        // 鼻子：倒三角圓角
+        '<path d="M43.5 62 h13 a3.4 3.4 0 0 1 2.5 5.6 l-5.3 5.4 a3.6 3.6 0 0 1 -5.4 0 ' +
+          'l-5.3 -5.4 a3.4 3.4 0 0 1 2.5 -5.6z" fill="#3A2412"/>' +
+        // 嘴
+        '<path d="M50 73.5 v3.5 M50 77 q-6.5 5.5 -11.5 .5 M50 77 q6.5 5.5 11.5 .5" ' +
           'stroke="#3A2412" stroke-width="2.8" fill="none" stroke-linecap="round"/>' +
-        '<path d="M45.5 80 q4.5 9 9 0z" fill="#E2621C"/>' +
+        // 舌頭
+        '<path d="M45 79.5 q5 9.5 10 0 z" fill="#E2621C"/>' +
       "</svg>",
-
     beaker:
       '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
         '<path d="M31 62 h38 l11 18 a6 6 0 0 1 -5 9 h-50 a6 6 0 0 1 -5 -9z" fill="#A9CE3B"/>' +
@@ -692,6 +727,29 @@
         "</g>" +
       "</svg>",
 
+    /* 木製投石機，STEAM 營隊的經典關卡 */
+    catapult:
+      '<svg viewBox="0 0 120 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<g stroke="#8A5A2B" stroke-width="7" stroke-linecap="round" fill="none">' +
+          '<path d="M18 88 L44 50"/><path d="M70 88 L44 50"/>' +   // 前腳架
+          '<path d="M30 88 h56"/>' +                                // 底座
+          '<path d="M86 88 L62 56"/>' +                             // 後撐
+        "</g>" +
+        // 拋臂
+        '<g transform="rotate(-34 48 52)">' +
+          '<rect x="44" y="46" width="62" height="9" rx="4.5" fill="#C08A4E" ' +
+            'stroke="#8A5A2B" stroke-width="3"/>' +
+          '<path d="M104 50 a11 9 0 0 0 16 -3 a13 11 0 0 1 -16 3z" fill="#C08A4E" ' +
+            'stroke="#8A5A2B" stroke-width="3" stroke-linejoin="round"/>' +
+        "</g>" +
+        '<circle cx="48" cy="52" r="6" fill="#8A5A2B"/>' +
+        // 飛出去的石頭
+        '<circle cx="100" cy="14" r="7" fill="#7A7A72"/>' +
+        '<g stroke="#E2621C" stroke-width="3.5" stroke-linecap="round" opacity=".75">' +
+          '<path d="M86 24 q8 -8 8 -14"/><path d="M78 30 q6 -5 6 -10"/>' +
+        "</g>" +
+      "</svg>",
+
     grass:
       '<svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
         '<g fill="none" stroke-linecap="round">' +
@@ -754,6 +812,7 @@
     perks: "社員權益",
     promo: "近期活動",
     teacher: "指導老師",
+    feedback: "心得回饋",
     lottery: "抽獎",
     photo: "大合照"
   };
@@ -784,10 +843,15 @@
     add({ part: "teacher", kind: "teacher", ti: n, label: "老師　" + t.name });
   });
 
+  add({ part: "feedback", kind: "feedback", label: "心得回饋 QR" });
+
+  add({ part: "photo", kind: "photo", label: "★ 大合照（T 倒數）" });
+  add({ part: "open", kind: "cover", label: "首頁（間場）" });
+
   add({ part: "lottery", kind: "lotteryIntro", label: "抽獎 說明・獎項一覽" });
   add({ part: "lottery", kind: "lotteryDraw", label: "★ 抽獎進行中" });
 
-  add({ part: "photo", kind: "photo", label: "★ 大合照（T 倒數）" });
+  add({ part: "open", kind: "cover", label: "首頁（結尾）" });
 
   /* ============================================================
      狀態
@@ -1193,6 +1257,28 @@
       '</div>';
   };
 
+  /* ---------- 心得回饋 ---------- */
+  VIEWS.feedback = function () {
+    var url = (window.CDVC_CONFIG || {}).feedbackUrl || "";
+    var qr = "";
+    try { qr = url ? QR.svg(url) : ""; } catch (e) { qr = ""; }
+
+    return '' +
+      '<h1 class="huge">心得回饋<span class="en">Tell us how it went</span></h1>' +
+      (qr
+        ? '<div class="askqr askqr--big">' +
+            '<div class="qr">' + qr + "</div>" +
+            '<div class="askqr__t"><b>' +
+              bi("掃這裡填回饋", "Scan to fill in the form") + "</b>" +
+              biHtml("兩分鐘就好，寫什麼都可以。<br>你的一句話會決定下次辦什麼。",
+                     "Two minutes. Anything you write helps us plan the next one.") +
+              '<div class="askqr__u">' + esc(url) + "</div>" +
+            "</div>" +
+          "</div>"
+        : '<p class="lede quiet">回饋表單的網址還沒填。<br>' +
+          "到 <b>assets/settings.js</b> 把 <b>feedbackUrl</b> 填進去，這裡就會長出 QR。</p>");
+  };
+
   /* ---------- 抽獎 ---------- */
   function prizeList() {
     var ps = prizes();
@@ -1294,6 +1380,9 @@
         "<div>" +
           '<h1 class="big">這學期的<span class="mark">活動</span>' +
             '<span class="en">This semester</span></h1>' +
+          '<p class="endnote">' +
+            bi("參加活動累積四枚，解鎖限定小禮", "Collect four stamps to unlock a limited gift") +
+          "</p>" +
         "</div>" +
       "</div>" +
       '<div class="ends">' +
@@ -1419,7 +1508,14 @@
   document.addEventListener("keydown", function (e) {
     var sc = S[i];
 
-    if (e.key === "Escape") { e.preventDefault(); toggleMenu(); return; }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      // 放大圖開著的時候，Esc 先關它
+      if (!$("lightbox").hidden) { closeBox(); return; }
+      toggleMenu();
+      return;
+    }
+    if (!$("lightbox").hidden) { closeBox(); return; }
     if (!$("menu").hidden) { return; }
 
     if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown" || e.key === "Enter") {
@@ -1508,8 +1604,22 @@
   }
 
   document.addEventListener("click", function (e) {
-    if (e.target.closest("#b-lang")) { toggleLang(); }
+    if (e.target.closest("#b-lang")) { toggleLang(); return; }
+
+    var dm = e.target.closest(".promowall img");
+    if (dm) { openBox(dm.src); return; }
+    if (e.target.closest("#lightbox")) { closeBox(); }
   });
+
+  function openBox(src) {
+    $("lightbox-img").src = src;
+    $("lightbox").hidden = false;
+  }
+
+  function closeBox() {
+    $("lightbox").hidden = true;
+    $("lightbox-img").src = "";
+  }
 
   $("menu").addEventListener("click", function (e) {
     var li = e.target.closest("[data-jump]");
