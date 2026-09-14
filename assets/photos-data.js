@@ -155,6 +155,7 @@
     outing: {
       title: "社遊",
       titleEn: "Club Outings",
+      perRow: 3,
       items: [
         { src: P + "outing1.webp", alt: "平溪放天燈" },
         { src: P + "outing2.webp", alt: "擎天崗大合照" },
@@ -165,6 +166,7 @@
     },
 
     kitchen: {
+      perRow: 3,
       title: "蔬食料理社聚",
       titleEn: "Vegetarian Cook & Eat",
       lede: "每週三 18:30，蔬食開伙，歡迎下課後來用餐。",

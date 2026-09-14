@@ -238,8 +238,9 @@
     background:var(--paper-2);
     line-height:0;
   }
-  .wall figure:nth-child(odd){transform:rotate(-.6deg);}
-  .wall figure:nth-child(even){transform:rotate(.6deg);}
+  .wall figure.tiltA{transform:rotate(-.6deg);}
+  .wall figure.tiltB{transform:rotate(.6deg);}
+  .wall .wbreak{flex:0 0 100%;height:0;margin:0;}
   .wall img{display:block;height:100%;width:auto;}
   .wall--empty{
     display:block;height:auto;
@@ -395,7 +396,7 @@
   .ends{
     display:flex;align-items:stretch;justify-content:center;
     gap:4vmin;margin-top:2vmin;
-    width:100%;height:68vh;
+    width:100%;height:70vh;
   }
   .end{
     display:flex;flex-direction:column;align-items:center;
@@ -414,23 +415,23 @@
   /* QR 方方正正就好，不用跟著卡片一起拉高 */
   .end--qr .end__pic{flex:0 0 auto;align-self:center;}
 
-  .end--qr{flex:0 0 14%;}
-  .end--promo{flex:0 0 52%;}
-  .end--cal{flex:0 0 28%;}
+  .end--qr{flex:0 0 38%;}
+  .end--cal{flex:0 0 40%;}
 
-  /* 三欄兩排，六張宣傳圖各自照原比例縮進格子裡 */
-  .promo{
-    flex:1 1 auto;min-height:0;
+  /* 近期活動：三欄兩排，六張各自照原比例縮進格子裡 */
+  .promowall{
+    flex:1 1 0;min-height:0;
     display:grid;
-    grid-template-columns:repeat(4,minmax(0,1fr));
+    grid-template-columns:repeat(3,minmax(0,1fr));
     grid-template-rows:repeat(2,minmax(0,1fr));
-    gap:.55rem;width:100%;
+    gap:1.4vmin;width:100%;max-width:96rem;
     place-items:center;
+    margin-top:.6rem;
   }
-  .promo img{
+  .promowall img{
     max-width:100%;max-height:100%;width:auto;height:auto;display:block;
-    border:.2rem solid #fff;border-radius:.35rem;
-    box-shadow:0 .2rem .55rem rgba(90,52,18,.24);
+    border:.3rem solid #fff;border-radius:.5rem;
+    box-shadow:0 .35rem .9rem rgba(90,52,18,.26);
   }
   .end__title{
     flex:none;
@@ -573,15 +574,30 @@
 
     dog:
       '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
-        '<path d="M24 30 q-10 -21 4 -23 q12 -2 17 17z" fill="#8A5A2B"/>' +
-        '<path d="M76 30 q10 -21 -4 -23 q-12 -2 -17 17z" fill="#8A5A2B"/>' +
-        '<ellipse cx="50" cy="54" rx="30" ry="27" fill="#C08A4E"/>' +
-        '<ellipse cx="50" cy="68" rx="16" ry="12" fill="#F3E2C7"/>' +
-        '<ellipse cx="50" cy="60" rx="6" ry="4.5" fill="#40260F"/>' +
-        '<path d="M50 64 v5 M50 69 q-6 5 -11 1 M50 69 q6 5 11 1" stroke="#40260F" ' +
-          'stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
-        '<circle cx="38" cy="46" r="4" fill="#40260F"/>' +
-        '<circle cx="62" cy="46" r="4" fill="#40260F"/>' +
+        // 垂下來的耳朵
+        '<path d="M23 36 q-11 -6 -9 12 q2 18 14 20 z" fill="#A9713C"/>' +
+        '<path d="M77 36 q11 -6 9 12 q-2 18 -14 20 z" fill="#A9713C"/>' +
+        // 頭
+        '<path d="M50 22 q26 0 29 24 q3 26 -12 34 q-9 5 -17 5 t-17 -5 q-15 -8 -12 -34 ' +
+          'q3 -24 29 -24z" fill="#D9A05B"/>' +
+        // 眉心與口鼻的淺色
+        '<ellipse cx="50" cy="68" rx="19" ry="15" fill="#FBEBD2"/>' +
+        '<path d="M50 30 q6 10 5 20 q-5 3 -10 0 q-1 -10 5 -20z" fill="#FBEBD2" opacity=".75"/>' +
+        // 腮紅
+        '<ellipse cx="27" cy="66" rx="6.5" ry="4.2" fill="#E2621C" opacity=".28"/>' +
+        '<ellipse cx="73" cy="66" rx="6.5" ry="4.2" fill="#E2621C" opacity=".28"/>' +
+        // 眼睛
+        '<ellipse cx="37" cy="55" rx="5.4" ry="6.2" fill="#3A2412"/>' +
+        '<ellipse cx="63" cy="55" rx="5.4" ry="6.2" fill="#3A2412"/>' +
+        '<circle cx="38.9" cy="52.6" r="2" fill="#fff"/>' +
+        '<circle cx="64.9" cy="52.6" r="2" fill="#fff"/>' +
+        // 鼻子
+        '<path d="M44 63 h12 a3.2 3.2 0 0 1 2.4 5.2 l-4.8 5.2 a3.4 3.4 0 0 1 -5.2 0 ' +
+          'l-4.8 -5.2 a3.2 3.2 0 0 1 2.4 -5.2z" fill="#3A2412"/>' +
+        // 嘴與舌頭
+        '<path d="M50 74 v3.5 M50 77.5 q-6 5.5 -11 .5 M50 77.5 q6 5.5 11 .5" ' +
+          'stroke="#3A2412" stroke-width="2.8" fill="none" stroke-linecap="round"/>' +
+        '<path d="M45.5 80 q4.5 9 9 0z" fill="#E2621C"/>' +
       "</svg>",
 
     beaker:
@@ -714,6 +730,7 @@
     outing: "社遊",
     kitchen: "開伙",
     perks: "社員權益",
+    promo: "近期活動",
     teacher: "指導老師",
     lottery: "抽獎",
     photo: "大合照"
@@ -737,6 +754,7 @@
   add({ part: "kitchen", kind: "wall", set: "kitchen", label: "★ 開伙的樣子" });
 
   add({ part: "perks", kind: "perks", label: "社員權益" });
+  add({ part: "promo", kind: "promo", label: "★ 近期活動" });
 
   add({ part: "teacher", kind: "teacherTitle", label: "指導老師介紹 標題" });
   TEACHERS.forEach(function (t, n) {
@@ -982,9 +1000,14 @@
       (set.lede
         ? '<p class="lede" style="margin-top:.6rem">' + biHtml(set.lede, set.ledeEn) + "</p>"
         : "") +
-      '<div class="wall" id="wall">' +
-        items.map(function (ph) {
-          return '<figure><img src="' + esc(ph.src) + '" alt="' + esc(ph.alt || "") + '"></figure>';
+      '<div class="wall" id="wall" data-per-row="' + (set.perRow || 0) + '">' +
+        items.map(function (ph, n) {
+          // perRow 有指定的話，每 perRow 張插一個撐滿寬度的空元素把列斷開，
+          // 不然 flex 會貪心地能塞幾張就塞幾張，排出 4+2 這種一邊擠一邊空的樣子
+          var br = (set.perRow && n && n % set.perRow === 0)
+            ? '<div class="wbreak"></div>' : "";
+          return br + '<figure class="' + (n % 2 ? "tiltB" : "tiltA") + '">' +
+            '<img src="' + esc(ph.src) + '" alt="' + esc(ph.alt || "") + '"></figure>';
         }).join("") +
       "</div>";
   };
@@ -1032,15 +1055,34 @@
         return { el: fig, img: img, a: a };
       });
 
-      // 某個高度會排成幾列
+      var perRow = +wall.dataset.perRow || 0;
+
+      /**
+       * 某個高度會排成幾列；排不下就回 0。
+       *
+       * perRow 有指定的話，列數是固定的，只要檢查每一列的寬度塞不塞得下——
+       * 貪心排法會把照片都擠到第一列，剩下兩張孤零零在第二列。
+       */
       function rowsAt(h) {
-        var rows = 1, used = 0;
-        for (var n = 0; n < shots.length; n++) {
-          var w = shots[n].a * h + frame;
-          if (used > 0 && used + gap + w > W) { rows++; used = w; }
+        if (perRow) {
+          var rows = Math.ceil(shots.length / perRow);
+          for (var r = 0; r < rows; r++) {
+            var wide = 0;
+            for (var k = r * perRow; k < Math.min((r + 1) * perRow, shots.length); k++) {
+              wide += shots[k].a * h + frame + (k > r * perRow ? gap : 0);
+            }
+            if (wide > W) { return 0; }
+          }
+          return rows;
+        }
+
+        var n = 1, used = 0;
+        for (var i2 = 0; i2 < shots.length; i2++) {
+          var w = shots[i2].a * h + frame;
+          if (used > 0 && used + gap + w > W) { n++; used = w; }
           else { used = used ? used + gap + w : w; }
         }
-        return rows;
+        return n;
       }
 
       // 下限從 8 起跳、上限夾在容器高度內。
@@ -1050,7 +1092,7 @@
       for (var k = 0; k < 40; k++) {
         var mid = (lo + hi) / 2;
         var r = rowsAt(mid);
-        if (r * (mid + frame) + (r - 1) * gap <= H) { best = mid; lo = mid; }
+        if (r && r * (mid + frame) + (r - 1) * gap <= H) { best = mid; lo = mid; }
         else { hi = mid; }
       }
 
@@ -1087,6 +1129,17 @@
             '<div class="t">' + bi(r[1], r[2]) + "</div></li>";
         }).join("") +
       "</ul>";
+  };
+
+  /* ---------- 近期活動 ---------- */
+  VIEWS.promo = function () {
+    return '' +
+      '<h1 class="big">近期活動<span class="en">Coming up</span></h1>' +
+      '<div class="promowall">' +
+        PROMOS.map(function (n) {
+          return '<img src="assets/' + n + '.webp" alt="近期活動" onerror="this.remove()">';
+        }).join("") +
+      "</div>";
   };
 
   /* ---------- 指導老師 ---------- */
@@ -1200,8 +1253,8 @@
   /* ---------- 結束卡 ---------- */
   /* 這學期的活動宣傳圖，排法照迎新最後一頁 */
   var PROMOS = [
-    "orientcamp", "punchneedle", "rathero", "aromastone",
-    "donut", "tiramisu", "midmoon"
+    "orientcamp", "punchneedle", "rathero",
+    "aromastone", "donut", "midmoon"
   ];
 
   VIEWS.outro = function () {
@@ -1227,14 +1280,6 @@
               '<div class="end__title">傳送門<small>Portal</small></div>' +
             "</div>"
           : "") +
-        '<div class="end end--promo">' +
-          '<div class="promo">' +
-            PROMOS.map(function (n) {
-              return '<img src="assets/' + n + '.webp" alt="近期活動" onerror="this.remove()">';
-            }).join("") +
-          "</div>" +
-          '<div class="end__title">近期活動<small>Coming up</small></div>' +
-        "</div>" +
         '<div class="end end--cal">' +
           '<div class="end__pic">' +
             '<img src="assets/calendar.webp" alt="這學期的活動行事曆" onerror="this.remove()">' +
