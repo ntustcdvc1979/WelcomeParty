@@ -66,7 +66,6 @@
         { kind: "rocket", l: 92.5, t: 0.5, w: 7, h: 14 }
       ],
       shots: [
-        { src: P + "steam1.webp", alt: "科學營課程", l: 48.97, t: 6.50, w: 44.08, h: 52.18 },
         { src: P + "steam2.webp", alt: "小朋友動手做實驗", l: 36.69, t: 53.99, w: 49.95, h: 49.97 },
         { src: P + "steam3.webp", alt: "科學營帶隊", l: 3.77, t: 22.73, w: 46.87, h: 46.89 },
         { src: P + "rocket.webp", alt: "水火箭發射瞬間", l: 1.50, t: 66.50, w: 34, h: 32 }
@@ -76,6 +75,11 @@
       title: "創藝營隊",
       en: "Creative Arts Camp",
       titleAt: { l: 3.62, t: 2.0, w: 49.27 },
+      deco: [
+        { kind: "grass", l: -1, t: 74, w: 30, h: 26 },
+        { kind: "grass", l: 88, t: 76, w: 24, h: 24 },
+        { kind: "mango", l: 91, t: 20, w: 9, h: 18 }
+      ],
       shots: [
         { src: P + "zhuwei1.webp", alt: "創藝營隊課堂", l: 6.37, t: 23.44, w: 41.70, h: 49.44 },
         { src: P + "zhuwei2.webp", alt: "創藝營隊活動", l: 48.07, t: 4.12, w: 42.54, h: 50.43 },
@@ -91,11 +95,12 @@
         { kind: "pompom", l: 3.5, t: 62, w: 10, h: 18 },
         { kind: "flower", l: 91.5, t: 74, w: 8, h: 15 }
       ],
+      // 原稿四張疊得很緊，這裡拉開留出間隔，每一張才看得完整
       shots: [
-        { src: P + "craft1.webp", alt: "手作社課現場", l: 34.46, t: 2.55, w: 35.70, h: 47.45 },
-        { src: P + "craft2.webp", alt: "手作成品", l: 50.00, t: 50.00, w: 20.16, h: 47.59 },
-        { src: P + "craft3.webp", alt: "專心手作中", l: 70.16, t: 21.11, w: 20.21, h: 47.86 },
-        { src: P + "craft4.webp", alt: "大家一起做", l: 15.41, t: 50.00, w: 34.59, h: 46.17 }
+        { src: P + "craft1.webp", alt: "手作社課現場", l: 31.50, t: 2.00, w: 34.00, h: 45.20 },
+        { src: P + "craft2.webp", alt: "手作成品", l: 52.00, t: 52.00, w: 19.00, h: 44.90 },
+        { src: P + "craft3.webp", alt: "專心手作中", l: 74.50, t: 19.00, w: 19.50, h: 46.20 },
+        { src: P + "craft4.webp", alt: "大家一起做", l: 15.00, t: 52.00, w: 33.00, h: 44.00 }
       ]
     },
     {
@@ -121,14 +126,8 @@
        沿著白底切成八張分開放，等高排版就會把每一張撐大。
        第一張大合照用的是原始檔，不是從拼貼圖切下來的。 */
     relief: {
-      eyebrow: "服務不挑地點",
-      eyebrowEn: "Wherever we are needed",
-      title: "賑災在哪，我們就在哪",
-      titleEn: "We go where the disaster is",
-      lede: "醫療關懷隊帶著血壓計、血氧機和物資出隊。<br>" +
-            "不是等一切都好了才去，是<b>需要的時候就在</b>。",
-      ledeEn: "The medical care team brings monitors, oximeters and supplies. " +
-              "We do not wait until it is over — we are there when it matters.",
+      title: "災難在哪，我們就在哪",
+      titleEn: "Disaster Relief",
       items: [
         { src: P + "relief1.webp", alt: "醫療關懷隊全隊合影" },
         { src: P + "relief5.webp", alt: "APUVA STEM+M 醫療關懷隊" },
@@ -142,15 +141,8 @@
     },
 
     global: {
-      eyebrow: "而且不只在台灣",
-      eyebrowEn: "And not only in Taiwan",
-      title: "我們也去海外義診交流",
-      titleEn: "Overseas clinics and exchange",
-      lede: "跟著團隊出國做義診、做交流，<br>" +
-            "你會發現<b>需要幫忙的人到處都有</b>，<br>" +
-            "而你的手可以伸得比想像中更遠。",
-      ledeEn: "Go abroad with the team and you find that people who need a hand " +
-              "are everywhere — and your reach is longer than you thought.",
+      title: "海外交流，開拓視野",
+      titleEn: "Overseas Exchange",
       items: [
         { src: P + "08.webp", alt: "海外義診服務現場" },
         { src: P + "09.webp", alt: "海外交流合影" },
@@ -159,14 +151,10 @@
     },
 
     kitchen: {
-      eyebrow: "伙食團",
-      eyebrowEn: "The kitchen team",
       title: "這就是我們平常開伙的樣子",
       titleEn: "This is how we cook together",
-      lede: "每週三 18:30，蔬食開伙，歡迎下課後來用餐。<br>" +
-            "如果早一點來，學長姐手把手教你煮飯喔。",
-      ledeEn: "Vegetarian cooking every Wednesday at 18:30. " +
-              "Come early and someone will teach you to cook.",
+      lede: "每週三 18:30，蔬食開伙，歡迎下課後來用餐。",
+      ledeEn: "Vegetarian cooking every Wednesday at 18:30.",
       items: [
         { src: P + "a0.webp", alt: "伙食團開伙" },
         { src: P + "a1.webp", alt: "一起備料" },

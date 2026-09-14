@@ -90,24 +90,6 @@
     padding-left:.3em;
   }
 
-  /* ---------- 流程 ---------- */
-  .agenda{
-    list-style:none;margin:2vmin 0 0;padding:0;
-    display:grid;gap:1.6vmin;width:min(100%,52rem);
-  }
-  .agenda li{
-    display:flex;align-items:center;gap:2.4vmin;
-    padding:1.8vmin 3vmin;
-    border-radius:1.4rem;
-    background:rgba(255,255,255,.72);
-    border:.3vmin solid var(--paper-3);
-    text-align:left;
-  }
-  .agenda .e{font-size:clamp(1.8rem,5.4vmin,3.6rem);line-height:1;flex:none;}
-  /* 固定寬度，五列的中文／英文才會對齊成一欄 */
-  .agenda .t{flex:0 0 34%;font-size:clamp(1.2rem,3.4vmin,2.6rem);font-weight:900;}
-  .agenda .d{flex:1;min-width:0;font-size:clamp(.95rem,2.5vmin,1.7rem);color:var(--ink-2);}
-
   /* ---------- 三隻猴子 ---------- */
   .roles{
     display:grid;grid-template-columns:repeat(3,1fr);
@@ -344,7 +326,7 @@
     border:.35vmin solid var(--paper-3);
     text-align:left;
   }
-  .askqr .qr{width:min(20vmin,11rem);flex:none;}
+  .askqr .qr{width:min(34vmin,20rem);flex:none;}
   .askqr__t{font-size:clamp(1rem,2.7vmin,1.9rem);line-height:1.6;color:var(--ink-2);}
   .askqr__t b{display:block;color:var(--ink);font-size:clamp(1.1rem,3.2vmin,2.3rem);}
   .askqr__u{font-size:clamp(.75rem,1.8vmin,1.15rem);word-break:break-all;opacity:.8;}
@@ -373,8 +355,30 @@
     background:#fff;border-radius:.6rem;
     box-shadow:0 .4vmin 1.2vmin rgba(90,52,18,.28);
   }
+  .end__pic img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;}
   .end__pic .qr{width:auto;height:100%;aspect-ratio:1;}
   .end__pic .qr svg{width:100%;height:100%;}
+  /* QR 方方正正就好，不用跟著卡片一起拉高 */
+  .end--qr .end__pic{flex:0 0 auto;align-self:center;}
+
+  .end--qr{flex:0 0 20%;}
+  .end--promo{flex:0 0 44%;}
+  .end--cal{flex:0 0 30%;}
+
+  /* 三欄兩排，六張宣傳圖各自照原比例縮進格子裡 */
+  .promo{
+    flex:1 1 auto;min-height:0;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    gap:.55rem;width:100%;
+    place-items:center;
+  }
+  .promo img{
+    max-width:100%;max-height:100%;width:auto;height:auto;display:block;
+    border:.2rem solid #fff;border-radius:.35rem;
+    box-shadow:0 .2rem .55rem rgba(90,52,18,.24);
+  }
   .end__title{
     flex:none;
     font-size:clamp(1rem,3vmin,2.1rem);font-weight:900;color:var(--flame);
@@ -596,6 +600,44 @@
         "</g>" +
       "</svg>",
 
+    grass:
+      '<svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<g fill="none" stroke-linecap="round">' +
+          '<g stroke="#82A821" stroke-width="6">' +
+            '<path d="M14 100 q-4 -34 10 -56"/><path d="M34 100 q6 -38 26 -54"/>' +
+            '<path d="M60 100 q-2 -30 8 -46"/><path d="M96 100 q8 -34 30 -48"/>' +
+            '<path d="M124 100 q-4 -32 6 -50"/><path d="M156 100 q10 -30 28 -42"/>' +
+            '<path d="M180 100 q-2 -26 4 -40"/>' +
+          "</g>" +
+          '<g stroke="#A9CE3B" stroke-width="5">' +
+            '<path d="M24 100 q8 -26 26 -36"/><path d="M78 100 q-6 -24 2 -38"/>' +
+            '<path d="M112 100 q10 -24 26 -34"/><path d="M168 100 q-6 -22 0 -34"/>' +
+          "</g>" +
+        "</g>" +
+        '<g fill="#E2621C">' +
+          '<circle cx="50" cy="40" r="7"/><circle cx="130" cy="46" r="6"/>' +
+          '<circle cx="186" cy="56" r="5"/>' +
+        "</g>" +
+        '<g fill="#F2A72C">' +
+          '<circle cx="50" cy="40" r="3"/><circle cx="130" cy="46" r="2.6"/>' +
+        "</g>" +
+      "</svg>",
+
+    /* 楊枝甘露：芒果西米露那杯 */
+    mango:
+      '<svg viewBox="0 0 70 110" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<path d="M12 30 h46 l-6 68 a6 6 0 0 1 -6 5 h-22 a6 6 0 0 1 -6 -5z" fill="#FFF6E2"/>' +
+        '<path d="M15 52 h40 l-4 46 a6 6 0 0 1 -6 5 h-20 a6 6 0 0 1 -6 -5z" fill="#F2A72C"/>' +
+        '<path d="M13 38 h44 l-1.2 14 h-41.6z" fill="#E9A317" opacity=".55"/>' +
+        '<g fill="#FFFCF2" opacity=".9">' +
+          '<circle cx="26" cy="72" r="3"/><circle cx="38" cy="80" r="3"/>' +
+          '<circle cx="46" cy="66" r="2.6"/><circle cx="31" cy="90" r="2.6"/>' +
+        "</g>" +
+        '<path d="M12 30 h46" stroke="#0E8C8F" stroke-width="5" stroke-linecap="round" fill="none"/>' +
+        '<path d="M46 30 l10 -24" stroke="#E2621C" stroke-width="5" stroke-linecap="round" fill="none"/>' +
+        '<path d="M20 26 q6 -12 18 -10 q-4 12 -18 10z" fill="#A9CE3B"/>' +
+      "</svg>",
+
     tiramisu:
       '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
         '<rect x="14" y="34" width="72" height="52" rx="5" fill="#F7E9CE" ' +
@@ -626,7 +668,6 @@
   function add(o) { S.push(o); }
 
   add({ part: "open", kind: "cover", label: "首頁・崇德志工社" });
-  add({ part: "open", kind: "agenda", label: "今天的流程" });
 
   add({ part: "monkey", kind: "monkeyRules", label: "三隻猴子 規則・比劃猴掃 QR" });
   add({ part: "monkey", kind: "monkeyPlay", label: "★ 三隻猴子 進行中" });
@@ -760,25 +801,6 @@
       "</p>";
   };
 
-  VIEWS.agenda = function () {
-    var rows = [
-      ["🙈", "三隻猴子", "Three Monkeys", "比手畫腳、傳話、閉眼作畫，一次搞定破冰"],
-      ["🤝", "社團介紹", "About the Club", "志工、科學營、社課，還有賑災、國外交流、開伙"],
-      ["🎓", "指導老師", "Our Advisor", "社團背後一直在的人"],
-      ["🎁", "抽獎", "Lucky Draw", "名單都在裡面了，看誰運氣好"],
-      ["📸", "大合照", "Group Photo", "今天的證據"]
-    ];
-    return '' +
-      '<p class="eyebrow">今天的流程<span class="en">Run of show</span></p>' +
-      '<h1 class="big">五件事，一個下午<span class="en">Five things, one afternoon</span></h1>' +
-      '<ul class="agenda">' +
-        rows.map(function (r) {
-          return '<li><span class="e">' + r[0] + '</span>' +
-            '<span class="t">' + bi(r[1], r[2]) + '</span>' +
-            '<span class="d">' + esc(r[3]) + '</span></li>';
-        }).join("") +
-      '</ul>';
-  };
 
   /* ---------- 三隻猴子 ---------- */
   VIEWS.monkeyRules = function () {
@@ -882,7 +904,7 @@
     }
 
     return '' +
-      '<p class="eyebrow">' + bi(set.eyebrow || "", set.eyebrowEn) + "</p>" +
+      (set.eyebrow ? '<p class="eyebrow">' + bi(set.eyebrow, set.eyebrowEn) + "</p>" : "") +
       '<h1 class="big">' + bi(set.title || "", set.titleEn) + "</h1>" +
       (set.lede
         ? '<p class="lede" style="margin-top:.6rem">' + biHtml(set.lede, set.ledeEn) + "</p>"
@@ -1018,10 +1040,6 @@
     return '' +
       '<p class="eyebrow">🎁 Lucky Draw</p>' +
       '<h1 class="huge">抽獎時間<span class="en">Lucky Draw</span></h1>' +
-      '<p class="lede">' +
-        biHtml("名單上共 <b>" + pool().length + "</b> 位。抽出來的人請上台，抽過就不會再抽到你。",
-               pool().length + " names in the draw. Winners come up front, and are taken out of the pool.") +
-      "</p>" +
       prizeList() +
       (qr
         ? '<div class="askqr">' +
@@ -1075,20 +1093,20 @@
     }
     return '' +
       '<p class="eyebrow">📸</p>' +
-      '<h1 class="huge">大合照<span class="en">Group Photo</span></h1>' +
-      '<p class="lede">' +
-        biHtml("往中間站、矮的在前面、手可以舉起來。<br>準備好了，主持人按 <b>T</b> 開始倒數。",
-               "Squeeze in, shorter folks to the front, hands up if you like.") +
-      "</p>";
+      '<h1 class="huge">大合照<span class="en">Group Photo</span></h1>';
   };
 
   /* ---------- 結束卡 ---------- */
+  /* 這學期的活動宣傳圖，排法照迎新最後一頁 */
+  var PROMOS = [
+    "donut", "boardgamenight", "mt_cleanup",
+    "midmoon", "teaparty", "tiramisu"
+  ];
+
   VIEWS.outro = function () {
-    var CFG = window.CDVC_CONFIG || {};
-    var cards = [
-      { url: CFG.portalUrl, zh: "傳送門", en: "Portal · the form" },
-      { url: CFG.socialUrl, zh: "Instagram", en: "What we get up to" }
-    ].filter(function (c) { return c.url; });
+    var url = (window.CDVC_CONFIG || {}).portalUrl || "";
+    var qr = "";
+    try { qr = url ? QR.svg(url) : ""; } catch (e) { qr = ""; }
 
     return '' +
       '<div class="endhead">' +
@@ -1097,20 +1115,31 @@
           '<img src="assets/logo2.webp" alt="崇德志工社">' +
         "</div>" +
         "<div>" +
-          '<h1 class="big">今天很高興<span class="mark">見到你</span>' +
-            '<span class="en">Great to meet you today</span></h1>' +
+          '<h1 class="big">這學期的<span class="mark">活動</span>' +
+            '<span class="en">This semester</span></h1>' +
         "</div>" +
       "</div>" +
       '<div class="ends">' +
-        cards.map(function (c) {
-          var qr = "";
-          try { qr = QR.svg(c.url); } catch (e) { qr = ""; }
-          return '<div class="end">' +
-            '<div class="end__pic"><div class="qr">' + qr + "</div></div>" +
-            '<div class="end__title">' + esc(c.zh) +
-              "<small>" + esc(c.en) + "</small></div>" +
-          "</div>";
-        }).join("") +
+        (qr
+          ? '<div class="end end--qr">' +
+              '<div class="end__pic"><div class="qr">' + qr + "</div></div>" +
+              '<div class="end__title">傳送門<small>Portal</small></div>' +
+            "</div>"
+          : "") +
+        '<div class="end end--promo">' +
+          '<div class="promo">' +
+            PROMOS.map(function (n) {
+              return '<img src="assets/' + n + '.webp" alt="近期活動" onerror="this.remove()">';
+            }).join("") +
+          "</div>" +
+          '<div class="end__title">近期活動<small>Coming up</small></div>' +
+        "</div>" +
+        '<div class="end end--cal">' +
+          '<div class="end__pic">' +
+            '<img src="assets/calendar.webp" alt="這學期的活動行事曆" onerror="this.remove()">' +
+          "</div>" +
+          '<div class="end__title">行事曆<small>Calendar</small></div>' +
+        "</div>" +
       "</div>";
   };
 
