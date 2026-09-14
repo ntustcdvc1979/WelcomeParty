@@ -60,7 +60,7 @@
     {
       title: "STEAM 科學營",
       en: "STEAM Science Camp",
-      titleAt: { l: 4.00, t: 4.0, w: 33 },
+      titleAt: { l: 4.00, t: 4.0, w: 37 },
       deco: [
         { kind: "beaker", l: 86.5, t: 62, w: 12, h: 22 },
         { kind: "rocket", l: 91.5, t: 1, w: 8, h: 15 }
@@ -68,7 +68,7 @@
       // 原本右上角那張拿掉之後版面空了一塊，三張重新排：
       // 左邊直的一張水火箭，右邊上下兩張橫的
       shots: [
-        { src: P + "steam3.webp", alt: "科學營帶隊", l: 38.50, t: 6.50, w: 45, h: 44.5 },
+        { src: P + "steam3.webp", alt: "科學營帶隊", l: 42.00, t: 6.50, w: 44, h: 44.5 },
         { src: P + "steam2.webp", alt: "小朋友動手做實驗", l: 38.50, t: 54.00, w: 45, h: 44.5 },
         { src: P + "rocket.webp", alt: "水火箭發射瞬間", l: 2.50, t: 27.00, w: 34, h: 40 }
       ]
@@ -76,7 +76,7 @@
     {
       title: "創藝營隊",
       en: "Creative Arts Camp",
-      titleAt: { l: 3.62, t: 2.0, w: 49.27 },
+      titleAt: { l: 3.62, t: 2.0, w: 30 },
       deco: [
         { kind: "grass", l: -1, t: 74, w: 30, h: 26 },
         { kind: "grass", l: 88, t: 76, w: 24, h: 24 },
@@ -91,7 +91,7 @@
     {
       title: "紓壓手做",
       en: "Crafts to Unwind",
-      titleAt: { l: 1.65, t: 1.16, w: 33 },
+      titleAt: { l: 1.65, t: 1.16, w: 29 },
       deco: [
         { kind: "flower", l: 2.5, t: 14, w: 11, h: 20 },
         { kind: "pompom", l: 3.5, t: 62, w: 10, h: 18 },
@@ -99,7 +99,7 @@
       ],
       // 原稿四張疊得很緊，這裡拉開留出間隔，每一張才看得完整
       shots: [
-        { src: P + "craft1.webp", alt: "手作社課現場", l: 31.50, t: 2.00, w: 34.00, h: 45.20 },
+        { src: P + "craft1.webp", alt: "手作社課現場", l: 36.00, t: 2.00, w: 34.00, h: 45.20 },
         { src: P + "craft2.webp", alt: "手作成品", l: 52.00, t: 52.00, w: 19.00, h: 44.90 },
         { src: P + "craft3.webp", alt: "專心手作中", l: 74.50, t: 19.00, w: 19.50, h: 46.20 },
         { src: P + "craft4.webp", alt: "大家一起做", l: 15.00, t: 52.00, w: 33.00, h: 44.00 }
@@ -142,6 +142,7 @@
     },
 
     global: {
+      perRow: 3,
       title: "海外交流，開拓視野",
       titleEn: "Overseas Exchange",
       items: [

@@ -187,15 +187,20 @@
     position:absolute;
     z-index:2;
     margin:0;
+    /* 標題一折行就會往下掉到照片上。框寬不夠就讓它超出去，
+       右邊本來就是留白，比折行安全。 */
+    white-space:nowrap;
     font-weight:900;
     line-height:1.2;
     color:var(--ink);
-    /* pptx 是 72pt 排在 11.25 吋高的版面上，換算大約是版面高度的 8.9% */
+    /* pptx 是 72pt 排在 20 吋寬的版面上，剛好是版面寬度的 5% */
     font-size:clamp(1.5rem,4.9vw,5.6rem);
   }
-  @supports (container-type:size){
-    .collage{container-type:size;}
-    .collage h1{font-size:8.9cqh;}
+  .collage h1 .en{white-space:normal;}
+  /* 綁容器寬度而不是高度：接到 4:3 投影機時，標題才不會相對變寬去壓到照片 */
+  @supports (container-type:inline-size){
+    .collage{container-type:inline-size;}
+    .collage h1{font-size:5cqw;}
   }
 
   /* ---------- 內容多的頁面 ----------
@@ -216,7 +221,11 @@
   /* ---------- 照片牆那幾頁 ----------
      標題跟其他頁一樣大（不套 dense），上面留一段空白，
      標題才不會頂在畫面最上緣——照片牆會把剩下的高度全部吃掉。 */
-  .screen--wall{padding-top:3vmin;}
+  .screen--wall{padding-top:1.5vmin;}
+  /* 英文接在中文後面，不另起一行——那一行的高度直接還給照片 */
+  .screen--wall .big .en{
+    display:inline;font-size:.4em;margin:0 0 0 .6em;vertical-align:.12em;
+  }
   .screen--wall .lede{font-size:clamp(1.15rem,3.2vmin,2.4rem);max-width:40em;}
 
   .wall{
@@ -714,7 +723,6 @@
         '<rect x="16" y="50" width="68" height="11" fill="#C98A5A"/>' +
         '<rect x="16" y="68" width="68" height="11" fill="#C98A5A"/>' +
         '<rect x="10" y="26" width="80" height="14" rx="6" fill="#6B4423"/>' +
-        '<circle cx="70" cy="20" r="7.5" fill="#FFFCF2" stroke="#6B4423" stroke-width="2.5"/>' +
       "</svg>"
   };
 
@@ -755,6 +763,7 @@
 
   add({ part: "perks", kind: "perks", label: "社員權益" });
   add({ part: "promo", kind: "promo", label: "★ 近期活動" });
+  add({ part: "promo", kind: "outro", label: "★ 這學期的活動・傳送門 QR" });
 
   add({ part: "teacher", kind: "teacherTitle", label: "指導老師介紹 標題" });
   TEACHERS.forEach(function (t, n) {
@@ -765,7 +774,6 @@
   add({ part: "lottery", kind: "lotteryDraw", label: "★ 抽獎進行中" });
 
   add({ part: "photo", kind: "photo", label: "★ 大合照（T 倒數）" });
-  add({ part: "photo", kind: "outro", label: "結束卡" });
 
   /* ============================================================
      狀態
