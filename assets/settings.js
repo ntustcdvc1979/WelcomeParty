@@ -19,6 +19,9 @@ window.CDVC_CONFIG = {
   /* 社群連結，結束卡的 QR 用。 */
   socialUrl: "https://www.instagram.com/ntustcdvc/",
 
+  /* 傳送門（問卷）。抽獎那一頁和結束卡都會把它變成 QR。 */
+  portalUrl: "https://ntustcdvc1979.github.io/Portal",
+
   /* 由 assets/firebase-config.js 覆寫。留 null = 本機模式。 */
   firebase: null
 };

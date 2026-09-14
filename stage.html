@@ -33,6 +33,9 @@
     padding:4vmin 6vmin;
     gap:1.2vmin;
   }
+  /* 文字塊不准被壓縮。預設的 flex-shrink 會把文字框縮到比內容矮，
+     文字就溢出去疊在下一塊上面——照片牆那幾頁最明顯。 */
+  .screen > *{flex:none;}
 
   .eyebrow{
     margin:0;
@@ -61,6 +64,21 @@
 
   .mark{background:linear-gradient(180deg,transparent 58%,rgba(169,206,59,.55) 58%);}
 
+  /* ---------- 中英雙語 ----------
+     英文字級用 em，跟著上面那行中文自動縮放，不用每個地方各調一次。 */
+  .en{
+    display:block;
+    margin-top:.32em;
+    font-size:.44em;
+    font-weight:700;
+    line-height:1.4;
+    letter-spacing:.01em;
+    color:var(--ink-2);
+    opacity:.9;
+  }
+  .lede .en,.eyebrow .en{font-size:.78em;margin-top:.25em;font-weight:600;}
+  .eyebrow .en{letter-spacing:.12em;}
+
   /* ---------- 首頁 ---------- */
   .logos{display:flex;align-items:center;justify-content:center;gap:2.4vmin;}
   .logos img{height:min(18vmin,10rem);width:auto;display:block;}
@@ -86,19 +104,20 @@
     text-align:left;
   }
   .agenda .e{font-size:clamp(1.8rem,5.4vmin,3.6rem);line-height:1;flex:none;}
-  .agenda .t{font-size:clamp(1.2rem,3.4vmin,2.6rem);font-weight:900;flex:none;}
-  .agenda .d{font-size:clamp(.95rem,2.5vmin,1.7rem);color:var(--ink-2);}
+  /* 固定寬度，五列的中文／英文才會對齊成一欄 */
+  .agenda .t{flex:0 0 34%;font-size:clamp(1.2rem,3.4vmin,2.6rem);font-weight:900;}
+  .agenda .d{flex:1;min-width:0;font-size:clamp(.95rem,2.5vmin,1.7rem);color:var(--ink-2);}
 
   /* ---------- 三隻猴子 ---------- */
   .roles{
     display:grid;grid-template-columns:repeat(3,1fr);
-    gap:2vmin;width:min(100%,66rem);margin-top:1vmin;
+    gap:1.6vmin;width:min(100%,66rem);margin-top:.6vmin;
   }
   .role{
     background:rgba(255,255,255,.8);
     border:.35vmin solid var(--paper-3);
     border-radius:1.6rem;
-    padding:2.4vmin 2vmin;
+    padding:1.9vmin 1.6vmin;
   }
   .role__e{font-size:clamp(2.4rem,8vmin,5.4rem);line-height:1.1;}
   .role__n{
@@ -111,7 +130,7 @@
     display:flex;align-items:center;gap:2.4vmin;
     background:rgba(255,255,255,.8);
     border:.35vmin solid var(--paper-3);
-    border-radius:1.6rem;padding:2vmin 2.6vmin;margin-top:1.4vmin;
+    border-radius:1.6rem;padding:1.5vmin 2.2vmin;margin-top:.8vmin;
   }
   .scan .qr{width:min(22vmin,13rem);flex:none;}
   .scan__t{text-align:left;font-size:clamp(.95rem,2.5vmin,1.7rem);line-height:1.6;}
@@ -166,12 +185,25 @@
   }
   .collage img{
     position:absolute;
+    z-index:1;
     object-fit:cover;
     border-radius:.4rem;
     box-shadow:0 .5vmin 1.4vmin rgba(64,38,15,.24);
   }
+  /* 裝飾畫在照片後面，從縫隙露出來 */
+  .collage .deco{
+    position:absolute;
+    z-index:0;
+    display:block;
+    opacity:.9;
+    pointer-events:none;
+  }
+  /* 沒給尺寸的話瀏覽器會用它自己的預設值，圖形會被壓扁。
+     撐滿外框，再交給 svg 的 preserveAspectRatio 等比例縮進去。 */
+  .collage .deco svg{display:block;width:100%;height:100%;}
   .collage h1{
     position:absolute;
+    z-index:2;
     margin:0;
     font-weight:900;
     line-height:1.2;
@@ -184,13 +216,24 @@
     .collage h1{font-size:8.9cqh;}
   }
 
-  /* ---------- 照片牆 ---------- */
+  /* ---------- 內容多的頁面 ----------
+     照片牆和三隻猴子規則這幾頁，主角是照片和角色卡，不是標題。
+     標題整個縮一號，把高度讓出去——不縮的話，中文加英文會把下面的東西擠出畫面。 */
+  .screen--dense .eyebrow{font-size:clamp(.85rem,1.9vmin,1.3rem);}
+  .screen--dense .huge{font-size:clamp(2.4rem,10vmin,8rem);}
+  .screen--dense .big{font-size:clamp(1.8rem,5.6vmin,4.2rem);}
+  .screen--dense .lede{font-size:clamp(.95rem,2.4vmin,1.7rem);max-width:44em;}
+  .screen--dense .scan .qr{width:min(17vmin,10rem);}
+
   .wall{
     display:flex;flex-wrap:wrap;
     justify-content:center;align-content:center;
     gap:.7rem;
     width:100%;max-width:92rem;
-    height:62vh;
+    /* 吃掉標題之後剩下的高度，不寫死。
+       寫死 vh 的話，標題一加英文就把照片擠出畫面。
+       basis 用 0：空間不夠時照片牆自己縮到沒有，也不會去擠文字。 */
+    flex:1 1 0;min-height:0;
     margin-top:.8rem;
   }
   .wall figure{
@@ -292,13 +335,55 @@
     color:var(--flame);animation:pop .4s ease;
   }
 
-  /* ---------- 結束卡 ---------- */
-  .endgrid{
-    display:flex;align-items:center;justify-content:center;gap:5vmin;
-    width:min(100%,68rem);margin-top:1.5vmin;
+  /* ---------- 抽獎那一頁的問卷 QR ---------- */
+  .askqr{
+    display:flex;align-items:center;gap:3vmin;
+    margin-top:2vmin;padding:2vmin 3vmin;
+    border-radius:1.6rem;
+    background:rgba(255,255,255,.8);
+    border:.35vmin solid var(--paper-3);
+    text-align:left;
   }
-  .endgrid .qr{width:min(26vmin,15rem);flex:none;}
-  .endgrid__t{text-align:left;}
+  .askqr .qr{width:min(20vmin,11rem);flex:none;}
+  .askqr__t{font-size:clamp(1rem,2.7vmin,1.9rem);line-height:1.6;color:var(--ink-2);}
+  .askqr__t b{display:block;color:var(--ink);font-size:clamp(1.1rem,3.2vmin,2.3rem);}
+  .askqr__u{font-size:clamp(.75rem,1.8vmin,1.15rem);word-break:break-all;opacity:.8;}
+
+  /* ---------- 結束卡：QR 卡片，排法跟迎新最後一頁一樣 ---------- */
+  .endhead{
+    display:flex;align-items:center;justify-content:center;
+    gap:3vmin;text-align:left;
+  }
+  .endhead .logos img{height:min(11vmin,6rem);}
+  .endhead h1{margin:0;}
+
+  .ends{
+    display:flex;align-items:stretch;justify-content:center;
+    gap:4vmin;margin-top:2vmin;
+    width:100%;height:52vh;
+  }
+  .end{
+    display:flex;flex-direction:column;align-items:center;
+    gap:1vmin;min-height:0;min-width:0;
+  }
+  .end__pic{
+    flex:1 1 auto;min-height:0;
+    display:flex;align-items:center;justify-content:center;
+    padding:.6vmin;
+    background:#fff;border-radius:.6rem;
+    box-shadow:0 .4vmin 1.2vmin rgba(90,52,18,.28);
+  }
+  .end__pic .qr{width:auto;height:100%;aspect-ratio:1;}
+  .end__pic .qr svg{width:100%;height:100%;}
+  .end__title{
+    flex:none;
+    font-size:clamp(1rem,3vmin,2.1rem);font-weight:900;color:var(--flame);
+    text-align:center;line-height:1.35;
+  }
+  .end__title small{
+    display:block;font-size:.62em;font-weight:700;
+    color:var(--ink-2);opacity:.9;
+  }
 
   /* ---------- 下方工具列 ---------- */
   .bar{
@@ -390,6 +475,137 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   }
+
+  /** 中文一行、英文一行。英文字級用 em，跟著中文自動縮放。 */
+  function bi(zh, en) {
+    return esc(zh) + (en ? '<span class="en">' + esc(en) + "</span>" : "");
+  }
+
+  /** 同上，但中文那段本來就有 <br> <b> 之類的標記，不轉義。 */
+  function biHtml(zh, en) {
+    return zh + (en ? '<span class="en">' + esc(en) + "</span>" : "");
+  }
+
+  /* ============================================================
+     社團介紹那幾頁的裝飾
+
+     用畫的，不用 emoji：emoji 在不同系統長得不一樣，
+     而且投影出來的顏色跟社團色票對不起來。
+     每個圖形自己帶 viewBox，會等比例縮進 photos-data.js 給的框裡。
+     ============================================================ */
+  var DECO = {
+    sun:
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<g stroke="#E9A317" stroke-width="6" stroke-linecap="round">' +
+          '<line x1="50" y1="5" x2="50" y2="18"/><line x1="50" y1="82" x2="50" y2="95"/>' +
+          '<line x1="5" y1="50" x2="18" y2="50"/><line x1="82" y1="50" x2="95" y2="50"/>' +
+          '<line x1="19" y1="19" x2="28" y2="28"/><line x1="72" y1="72" x2="81" y2="81"/>' +
+          '<line x1="81" y1="19" x2="72" y2="28"/><line x1="28" y1="72" x2="19" y2="81"/>' +
+        "</g>" +
+        '<circle cx="50" cy="50" r="24" fill="#F2A72C"/>' +
+      "</svg>",
+
+    wave:
+      '<svg viewBox="0 0 300 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<g fill="none" stroke-width="7" stroke-linecap="round">' +
+          '<path d="M0 20 q25 -15 50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#0E8C8F" opacity=".4"/>' +
+          '<path d="M0 36 q25 -15 50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#0E8C8F" opacity=".7"/>' +
+          '<path d="M0 52 q25 -15 50 0 t50 0 t50 0 t50 0 t50 0 t50 0" stroke="#A9CE3B"/>' +
+        "</g>" +
+      "</svg>",
+
+    dog:
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<path d="M24 30 q-10 -21 4 -23 q12 -2 17 17z" fill="#8A5A2B"/>' +
+        '<path d="M76 30 q10 -21 -4 -23 q-12 -2 -17 17z" fill="#8A5A2B"/>' +
+        '<ellipse cx="50" cy="54" rx="30" ry="27" fill="#C08A4E"/>' +
+        '<ellipse cx="50" cy="68" rx="16" ry="12" fill="#F3E2C7"/>' +
+        '<ellipse cx="50" cy="60" rx="6" ry="4.5" fill="#40260F"/>' +
+        '<path d="M50 64 v5 M50 69 q-6 5 -11 1 M50 69 q6 5 11 1" stroke="#40260F" ' +
+          'stroke-width="2.6" fill="none" stroke-linecap="round"/>' +
+        '<circle cx="38" cy="46" r="4" fill="#40260F"/>' +
+        '<circle cx="62" cy="46" r="4" fill="#40260F"/>' +
+      "</svg>",
+
+    beaker:
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<path d="M31 62 h38 l11 18 a6 6 0 0 1 -5 9 h-50 a6 6 0 0 1 -5 -9z" fill="#A9CE3B"/>' +
+        '<path d="M40 12 h20 v26 l20 42 a6 6 0 0 1 -5 9 h-50 a6 6 0 0 1 -5 -9 l20 -42z" ' +
+          'fill="none" stroke="#0E8C8F" stroke-width="5" stroke-linejoin="round"/>' +
+        '<line x1="36" y1="12" x2="64" y2="12" stroke="#0E8C8F" stroke-width="6" stroke-linecap="round"/>' +
+        '<circle cx="44" cy="76" r="3.5" fill="#FFFCF2" opacity=".85"/>' +
+        '<circle cx="58" cy="82" r="2.5" fill="#FFFCF2" opacity=".85"/>' +
+      "</svg>",
+
+    rocket:
+      '<svg viewBox="0 0 60 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<path d="M18 46 l-12 23 13 -7z" fill="#E2621C"/>' +
+        '<path d="M42 46 l12 23 -13 -7z" fill="#E2621C"/>' +
+        '<path d="M30 4 q12 17 12 35 v23 h-24 v-23 q0 -18 12 -35z" fill="#2F6FD0"/>' +
+        '<rect x="22" y="60" width="16" height="12" rx="3" fill="#F2A72C"/>' +
+        '<circle cx="30" cy="30" r="6" fill="#FFFCF2"/>' +
+        '<g stroke="#0E8C8F" stroke-width="3" stroke-linecap="round" opacity=".75">' +
+          '<line x1="24" y1="78" x2="20" y2="94"/>' +
+          '<line x1="30" y1="78" x2="30" y2="97"/>' +
+          '<line x1="36" y1="78" x2="40" y2="94"/>' +
+        "</g>" +
+      "</svg>",
+
+    flower:
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<g fill="#E2621C">' +
+          '<ellipse cx="50" cy="26" rx="12" ry="17"/><ellipse cx="50" cy="62" rx="12" ry="17"/>' +
+          '<ellipse cx="32" cy="44" rx="17" ry="12"/><ellipse cx="68" cy="44" rx="17" ry="12"/>' +
+        "</g>" +
+        '<circle cx="50" cy="44" r="11" fill="#F2A72C"/>' +
+        '<path d="M50 58 q4 22 -7 38" stroke="#82A821" stroke-width="5" fill="none" stroke-linecap="round"/>' +
+        '<path d="M47 80 q-15 -7 -19 4 q13 6 19 -4z" fill="#A9CE3B"/>' +
+      "</svg>",
+
+    pompom: (function () {
+      // 一圈短絨毛，長短交錯，看起來才像毛球而不是太陽
+      var fuzz = "";
+      for (var a = 0; a < 360; a += 15) {
+        var r = Math.PI * a / 180;
+        var r1 = 27, r2 = a % 30 ? 37 : 41;
+        fuzz += '<line x1="' + (50 + r1 * Math.cos(r)).toFixed(1) +
+                '" y1="' + (50 + r1 * Math.sin(r)).toFixed(1) +
+                '" x2="' + (50 + r2 * Math.cos(r)).toFixed(1) +
+                '" y2="' + (50 + r2 * Math.sin(r)).toFixed(1) + '"/>';
+      }
+      return '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<g stroke="#E2621C" stroke-width="4" stroke-linecap="round">' + fuzz + "</g>" +
+        '<circle cx="50" cy="50" r="28" fill="#E2621C"/>' +
+        '<g stroke="#F2A72C" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".9">' +
+          '<path d="M34 42 q16 8 32 -2"/><path d="M33 54 q16 8 33 -3"/><path d="M38 65 q12 6 24 -3"/>' +
+        "</g>" +
+      "</svg>";
+    })(),
+
+    donut:
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<circle cx="50" cy="52" r="38" fill="#D9A05B"/>' +
+        '<circle cx="50" cy="47" r="34" fill="#E9A317"/>' +
+        '<circle cx="50" cy="52" r="12" fill="#FDF2D8"/>' +
+        '<g fill="#E2621C">' +
+          '<rect x="30" y="26" width="10" height="4" rx="2" transform="rotate(-25 35 28)"/>' +
+          '<rect x="58" y="30" width="10" height="4" rx="2" transform="rotate(20 63 32)"/>' +
+          '<rect x="24" y="56" width="10" height="4" rx="2" transform="rotate(35 29 58)"/>' +
+          '<rect x="63" y="58" width="10" height="4" rx="2" transform="rotate(-15 68 60)"/>' +
+          '<rect x="44" y="18" width="10" height="4" rx="2" transform="rotate(8 49 20)"/>' +
+        "</g>" +
+      "</svg>",
+
+    tiramisu:
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<rect x="14" y="34" width="72" height="52" rx="5" fill="#F7E9CE" ' +
+          'stroke="#8A5A2B" stroke-width="3"/>' +
+        '<rect x="16" y="50" width="68" height="11" fill="#C98A5A"/>' +
+        '<rect x="16" y="68" width="68" height="11" fill="#C98A5A"/>' +
+        '<rect x="10" y="26" width="80" height="14" rx="6" fill="#6B4423"/>' +
+        '<circle cx="70" cy="20" r="7.5" fill="#FFFCF2" stroke="#6B4423" stroke-width="2.5"/>' +
+      "</svg>"
+  };
 
   /* ============================================================
      流程：一維陣列，主持人一直按右鍵就會走完
@@ -502,7 +718,10 @@
     var sc = S[i];
     var el = $("screen");
 
-    el.className = "screen" + (sc.kind === "club" ? " screen--full" : "");
+    el.className = "screen" +
+      (sc.kind === "club" ? " screen--full" : "") +
+      (sc.kind === "wall" || sc.kind === "monkeyRules" || sc.kind === "lotteryIntro"
+        ? " screen--dense" : "");
     el.innerHTML = VIEWS[sc.kind] ? VIEWS[sc.kind](sc) : "";
     if (AFTER[sc.kind]) { AFTER[sc.kind](sc, el); }
 
@@ -532,27 +751,31 @@
         '<img src="assets/logo1.webp" alt="台科大崇德志工社社徽">' +
         '<img src="assets/logo2.webp" alt="台科大崇德志工社">' +
       '</div>' +
-      '<h1 class="huge">台科大<span class="mark">崇德志工社</span></h1>' +
-      '<p class="cover__sub">相見歡</p>' +
-      '<p class="lede">今天不點名、不自我介紹一輪。<br>我們用玩的，把彼此記起來。</p>';
+      '<h1 class="huge">台科大<span class="mark">崇德志工社</span>' +
+        '<span class="en">NTUST Chongde Volunteer Club</span></h1>' +
+      '<p class="cover__sub">相見歡<span class="en">Welcome Party</span></p>' +
+      '<p class="lede">' +
+        biHtml("今天不點名、不自我介紹一輪。<br>我們用玩的，把彼此記起來。",
+               "No roll call, no round of introductions. We will play, and remember each other that way.") +
+      "</p>";
   };
 
   VIEWS.agenda = function () {
     var rows = [
-      ["🙈", "三隻猴子", "比手畫腳、傳話、閉眼作畫，一次搞定破冰"],
-      ["🤝", "社團介紹", "我們平常在做的事：志工、科學營、社課、賑災、國外交流、開伙"],
-      ["🎓", "指導老師", "社團背後一直在的人"],
-      ["🎁", "抽獎", "名單都在裡面了，看誰運氣好"],
-      ["📸", "大合照", "今天的證據"]
+      ["🙈", "三隻猴子", "Three Monkeys", "比手畫腳、傳話、閉眼作畫，一次搞定破冰"],
+      ["🤝", "社團介紹", "About the Club", "志工、科學營、社課，還有賑災、國外交流、開伙"],
+      ["🎓", "指導老師", "Our Advisor", "社團背後一直在的人"],
+      ["🎁", "抽獎", "Lucky Draw", "名單都在裡面了，看誰運氣好"],
+      ["📸", "大合照", "Group Photo", "今天的證據"]
     ];
     return '' +
-      '<p class="eyebrow">今天的流程</p>' +
-      '<h1 class="big">五件事，一個下午</h1>' +
+      '<p class="eyebrow">今天的流程<span class="en">Run of show</span></p>' +
+      '<h1 class="big">五件事，一個下午<span class="en">Five things, one afternoon</span></h1>' +
       '<ul class="agenda">' +
         rows.map(function (r) {
           return '<li><span class="e">' + r[0] + '</span>' +
-            '<span class="t">' + esc(r[1]) + '</span>' +
-            '<span class="d">' + esc(r[2]) + '</span></li>';
+            '<span class="t">' + bi(r[1], r[2]) + '</span>' +
+            '<span class="d">' + esc(r[3]) + '</span></li>';
         }).join("") +
       '</ul>';
   };
@@ -564,22 +787,27 @@
     try { qr = QR.svg(url); } catch (e) { qr = "QR 產生失敗"; }
 
     return '' +
-      '<h1 class="big">三隻猴子</h1>' +
-      '<p class="lede">三個人一組站成一直線。' +
-        '<b>題目只有比劃猴的手機看得到</b>，投影幕上不會出現，' +
-        '答案不是用講的，是<b>用畫的</b>。</p>' +
+      '<h1 class="big">三隻猴子<span class="en">Three Monkeys</span></h1>' +
+      '<p class="lede">' +
+        biHtml("三個人一組站成一直線。<b>題目只有比劃猴的手機看得到</b>，" +
+               "投影幕上不會出現，答案不是用講的，是<b>用畫的</b>。",
+               "Three to a group, in a line. Only the Mime's phone shows the word — " +
+               "it never appears on screen. The answer is drawn, not spoken.") +
+      "</p>" +
       '<div class="roles">' +
         MONKEY.ROLES.map(function (r) {
           return '<div class="role"><div class="role__e">' + r.emoji + '</div>' +
-            '<div class="role__n">' + esc(r.name) + '</div>' +
-            '<div class="role__r">' + esc(r.rule) + '</div></div>';
+            '<div class="role__n">' + bi(r.name, r.en) + '</div>' +
+            '<div class="role__r">' + bi(r.rule, r.ruleEn) + '</div></div>';
         }).join("") +
       '</div>' +
       '<div class="scan">' +
         '<div class="qr">' + qr + '</div>' +
-        '<div class="scan__t"><b>🙊 比劃猴掃這裡</b>' +
-          '題目會出現在你的手機上，跟著主持人換題。<br>' +
-          '傳話猴和猜題猴請不要偷看別人的手機。' +
+        '<div class="scan__t"><b>' + bi("🙊 比劃猴掃這裡", "The Mime scans here") + "</b>" +
+          biHtml("題目會出現在你的手機上，跟著主持人換題。<br>" +
+                 "傳話猴和猜題猴請不要偷看別人的手機。",
+                 "The word shows up on your phone and changes as the host moves on. " +
+                 "Teller and Guesser: no peeking.") +
           '<div class="scan__u">' + esc(url) + '</div>' +
         '</div>' +
       '</div>';
@@ -590,15 +818,20 @@
     var at = Math.min(Math.max(monkey.at || 0, 0), Math.max(terms.length - 1, 0));
 
     return '' +
-      '<p class="eyebrow">三隻猴子</p>' +
+      '<p class="eyebrow">三隻猴子<span class="en">Three Monkeys</span></p>' +
       '<div class="pill">' +
-        (terms.length ? "第 " + (at + 1) + " 題　/　共 " + terms.length + " 題"
-                      : "後臺還沒有題目") +
+        (terms.length
+          ? "第 " + (at + 1) + " 題　/　共 " + terms.length + " 題" +
+            '<span class="en">Word ' + (at + 1) + " of " + terms.length + "</span>"
+          : bi("後臺還沒有題目", "No words set yet")) +
       '</div>' +
-      '<div class="secret"><span>🙊</span>題目在比劃猴的手機上</div>' +
+      '<div class="secret"><span>🙊</span>' +
+        bi("題目在比劃猴的手機上", "The word is on the Mime's phone") +
+      "</div>" +
       '<div class="rolebar">' +
         MONKEY.ROLES.map(function (r) {
-          return '<span>' + r.emoji + ' <b>' + esc(r.name) + '</b>：' + esc(r.short) + '</span>';
+          return '<span>' + r.emoji + ' <b>' + esc(r.name) + "</b>：" + esc(r.short) +
+            '<span class="en">' + esc(r.en) + " · " + esc(r.shortEn) + "</span></span>";
         }).join("") +
       '</div>' +
       '<div class="timer' + timerClass() + '" id="timer">' + timerText() + '</div>';
@@ -619,17 +852,22 @@
     var c = CLUB[sc.ci] || { shots: [], titleAt: {} };
     var t = c.titleAt || {};
 
+    function box(d) {
+      return "left:" + d.l + "%;top:" + d.t + "%;width:" + d.w + "%;height:" + d.h + "%";
+    }
+
     return '<div class="collage">' +
+      (c.deco || []).map(function (d) {
+        return '<span class="deco" style="' + box(d) + '">' + (DECO[d.kind] || "") + "</span>";
+      }).join("") +
       c.shots.map(function (s) {
         return '<img src="' + esc(s.src) + '" alt="' + esc(s.alt || "") + '" ' +
-          'onerror="this.remove()" style="' +
-          "left:" + s.l + "%;top:" + s.t + "%;width:" + s.w + "%;height:" + s.h + "%" +
-          '">';
+          'onerror="this.remove()" style="' + box(s) + '">';
       }).join("") +
       '<h1 style="' +
         "left:" + (t.l || 0) + "%;top:" + (t.t || 0) + "%;width:" + (t.w || 100) + "%;" +
         "text-align:" + (c.align === "center" ? "center" : "left") +
-      '">' + esc(c.title) + "</h1>" +
+      '">' + bi(c.title, c.en) + "</h1>" +
     "</div>";
   };
 
@@ -644,9 +882,11 @@
     }
 
     return '' +
-      '<p class="eyebrow">' + esc(set.eyebrow || "") + "</p>" +
-      '<h1 class="big">' + esc(set.title || "") + "</h1>" +
-      (set.lede ? '<p class="lede" style="margin-top:.6rem">' + set.lede + "</p>" : "") +
+      '<p class="eyebrow">' + bi(set.eyebrow || "", set.eyebrowEn) + "</p>" +
+      '<h1 class="big">' + bi(set.title || "", set.titleEn) + "</h1>" +
+      (set.lede
+        ? '<p class="lede" style="margin-top:.6rem">' + biHtml(set.lede, set.ledeEn) + "</p>"
+        : "") +
       '<div class="wall" id="wall">' +
         items.map(function (ph) {
           return '<figure><img src="' + esc(ph.src) + '" alt="' + esc(ph.alt || "") + '"></figure>';
@@ -708,7 +948,10 @@
         return rows;
       }
 
-      var lo = 40, hi = H, best = 40;
+      // 下限從 8 起跳、上限夾在容器高度內。
+      // 以前下限寫死 40：容器比 40 還矮的時候（小視窗、或標題特別長）
+      // 二分搜一次都不會成立，best 就停在 40，照片直接溢出去。
+      var lo = 8, hi = Math.max(H, 8), best = Math.min(8, Math.max(H - frame, 1));
       for (var k = 0; k < 40; k++) {
         var mid = (lo + hi) / 2;
         var r = rowsAt(mid);
@@ -716,7 +959,8 @@
         else { hi = mid; }
       }
 
-      shots.forEach(function (sh) { sh.img.style.height = Math.floor(best) + "px"; });
+      var px = Math.max(1, Math.floor(Math.min(best, H - frame)));
+      shots.forEach(function (sh) { sh.img.style.height = px + "px"; });
     }
 
     if (!pending) { layout(); }
@@ -724,15 +968,14 @@
 
   /* ---------- 指導老師 ---------- */
   VIEWS.teacherTitle = function () {
-    return '' +
-      '<p class="eyebrow">🎓 指導老師</p>' +
-      '<h1 class="big">在我們後面的<span class="mark">那幾個人</span></h1>' +
-      '<p class="lede">社團能一年一年辦下去，不是因為我們特別會辦活動，' +
-        '是因為有人願意一直在後面接住。</p>';
+    return '<h1 class="huge">指導老師介紹' +
+      '<span class="en">Our Advisor</span></h1>';
   };
 
   VIEWS.teacher = function (sc) {
     var t = TEACHERS[sc.ti] || {};
+    var en = t.linesEn || [];
+
     return '' +
       '<div class="teacher">' +
         '<div class="teacher__pic">' +
@@ -740,10 +983,12 @@
                      'onerror="this.remove()">' : "") +
         '</div>' +
         '<div>' +
-          '<h1 class="teacher__n">' + esc(t.name) + '</h1>' +
-          '<p class="teacher__t">' + esc(t.title || "") + '</p>' +
+          '<h1 class="teacher__n">' + bi(t.name, t.en) + '</h1>' +
+          '<p class="teacher__t">' + bi(t.title || "", t.titleEn) + '</p>' +
           '<ul class="teacher__l">' +
-            (t.lines || []).map(function (l) { return '<li>' + esc(l) + '</li>'; }).join("") +
+            (t.lines || []).map(function (l, n) {
+              return '<li>' + bi(l, en[n]) + "</li>";
+            }).join("") +
           '</ul>' +
         '</div>' +
       '</div>';
@@ -760,18 +1005,33 @@
       ps.map(function (p, n) {
         var got = history().filter(function (h) { return h.prize === p.name; }).length;
         return '<li class="' + (n === at ? "on" : "") + '">' + esc(p.name) +
-          '<small>' + got + " / " + (p.count || 1) + ' 位</small></li>';
+          '<small>' + got + " / " + (p.count || 1) + ' 位 · winners</small></li>';
       }).join("") +
       '</ul>';
   }
 
   VIEWS.lotteryIntro = function () {
+    var url = (window.CDVC_CONFIG || {}).portalUrl || "";
+    var qr = "";
+    try { qr = url ? QR.svg(url) : ""; } catch (e) { qr = ""; }
+
     return '' +
-      '<p class="eyebrow">🎁 抽獎</p>' +
-      '<h1 class="big">名單已經在箱子裡了</h1>' +
-      '<p class="lede">今天有來的人都在名單上，共 <b>' + pool().length + '</b> 位。<br>' +
-        '抽出來的人請上台，抽過就不會再抽到你。</p>' +
-      prizeList();
+      '<p class="eyebrow">🎁 Lucky Draw</p>' +
+      '<h1 class="huge">抽獎時間<span class="en">Lucky Draw</span></h1>' +
+      '<p class="lede">' +
+        biHtml("名單上共 <b>" + pool().length + "</b> 位。抽出來的人請上台，抽過就不會再抽到你。",
+               pool().length + " names in the draw. Winners come up front, and are taken out of the pool.") +
+      "</p>" +
+      prizeList() +
+      (qr
+        ? '<div class="askqr">' +
+            '<div class="qr">' + qr + "</div>" +
+            '<div class="askqr__t"><b>' +
+              bi("還沒填問卷的請掃這裡", "Not filled in the form yet? Scan here") + "</b>" +
+              '<div class="askqr__u">' + esc(url) + "</div>" +
+            "</div>" +
+          "</div>"
+        : "");
   };
 
   VIEWS.lotteryDraw = function () {
@@ -789,16 +1049,18 @@
     }
 
     return '' +
-      '<p class="eyebrow">' + (p ? "現在抽" : "🎁 抽獎") + '</p>' +
+      '<p class="eyebrow">' + (p ? bi("現在抽", "Drawing now") : "🎁 Lucky Draw") + '</p>' +
       '<h1 class="big">' + esc(p ? p.name : "還沒選獎項") + '</h1>' +
       body +
       '<p class="lede quiet">' +
         (winner
-          ? "恭喜 <b>" + esc(winner.name) + "</b>！請上台領獎。"
-          : "剩下 <b>" + names.length + "</b> 位在名單裡　·　後臺按「開始抽獎」，或在這裡按 <b>T</b>") +
+          ? biHtml("恭喜 <b>" + esc(winner.name) + "</b>！請上台領獎。",
+                   "Congratulations — come up and collect your prize.")
+          : biHtml("剩下 <b>" + names.length + "</b> 位在名單裡　·　後臺按「開始抽獎」，或在這裡按 <b>T</b>",
+                   names.length + " names left in the pool")) +
       '</p>' +
       (won.length
-        ? '<div class="won">已中獎：' +
+        ? '<div class="won">已中獎 Winners：' +
             won.map(function (h) {
               return '<b>' + esc(h.name) + '<small> ' + esc(h.prize || "") + '</small></b>';
             }).join("") +
@@ -812,30 +1074,44 @@
       return '<div class="count">' + (photoCount === 4 ? "📸" : photoCount) + '</div>';
     }
     return '' +
-      '<p class="eyebrow">📸 大合照</p>' +
-      '<h1 class="huge">全部人<span class="mark">擠進來</span></h1>' +
-      '<p class="lede">往中間站、矮的在前面、手可以舉起來。<br>' +
-        '準備好了，主持人按 <b>T</b> 開始倒數。</p>';
+      '<p class="eyebrow">📸</p>' +
+      '<h1 class="huge">大合照<span class="en">Group Photo</span></h1>' +
+      '<p class="lede">' +
+        biHtml("往中間站、矮的在前面、手可以舉起來。<br>準備好了，主持人按 <b>T</b> 開始倒數。",
+               "Squeeze in, shorter folks to the front, hands up if you like.") +
+      "</p>";
   };
 
   /* ---------- 結束卡 ---------- */
   VIEWS.outro = function () {
-    var url = (window.CDVC_CONFIG || {}).socialUrl || "https://www.instagram.com/ntustcdvc/";
-    var qr = "";
-    try { qr = QR.svg(url); } catch (e) { qr = ""; }
+    var CFG = window.CDVC_CONFIG || {};
+    var cards = [
+      { url: CFG.portalUrl, zh: "傳送門", en: "Portal · the form" },
+      { url: CFG.socialUrl, zh: "Instagram", en: "What we get up to" }
+    ].filter(function (c) { return c.url; });
 
     return '' +
-      '<div class="logos"><img src="assets/logo1.webp" alt="崇德志工社"></div>' +
-      '<h1 class="big">今天很高興<span class="mark">見到你</span></h1>' +
-      '<div class="endgrid">' +
-        '<div class="qr">' + qr + '</div>' +
-        '<div class="endgrid__t">' +
-          '<p class="lede">社團的活動都會發在 Instagram，<br>' +
-            '下次出隊、開伙、練歌，歡迎直接來。</p>' +
-          '<p class="lede quiet" style="font-size:clamp(.9rem,2.2vmin,1.5rem)">' +
-            esc(url) + '</p>' +
-        '</div>' +
-      '</div>';
+      '<div class="endhead">' +
+        '<div class="logos">' +
+          '<img src="assets/logo1.webp" alt="崇德志工社">' +
+          '<img src="assets/logo2.webp" alt="崇德志工社">' +
+        "</div>" +
+        "<div>" +
+          '<h1 class="big">今天很高興<span class="mark">見到你</span>' +
+            '<span class="en">Great to meet you today</span></h1>' +
+        "</div>" +
+      "</div>" +
+      '<div class="ends">' +
+        cards.map(function (c) {
+          var qr = "";
+          try { qr = QR.svg(c.url); } catch (e) { qr = ""; }
+          return '<div class="end">' +
+            '<div class="end__pic"><div class="qr">' + qr + "</div></div>" +
+            '<div class="end__title">' + esc(c.zh) +
+              "<small>" + esc(c.en) + "</small></div>" +
+          "</div>";
+        }).join("") +
+      "</div>";
   };
 
   /* ============================================================

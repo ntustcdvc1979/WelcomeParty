@@ -36,20 +36,29 @@
     {
       emoji: "🙊",
       name: "比劃猴",
+      en: "The Mime",
       short: "只能比，不能說",
-      rule: "拿手機看題目。只能比手畫腳，發出任何一個字就算犯規。"
+      shortEn: "Gesture only, no words",
+      rule: "拿手機看題目。只能比手畫腳，發出任何一個字就算犯規。",
+      ruleEn: "Read the word on the phone. Act it out. One spoken word and you are out."
     },
     {
       emoji: "🙉",
       name: "傳話猴",
+      en: "The Teller",
       short: "只能說，不能比",
-      rule: "只看得到比劃猴。用嘴巴把你看到的動作講給猜題猴聽，手不能動。"
+      shortEn: "Words only, no hands",
+      rule: "只看得到比劃猴。用嘴巴把你看到的動作講給猜題猴聽，手不能動。",
+      ruleEn: "You can only watch the Mime. Describe what you see out loud. Keep your hands still."
     },
     {
       emoji: "🙈",
       name: "猜題猴",
+      en: "The Guesser",
       short: "閉眼，用畫的",
-      rule: "閉上眼睛，只能用聽的，然後把聽到的東西畫在紙上。"
+      shortEn: "Eyes shut, draw it",
+      rule: "閉上眼睛，只能用聽的，然後把聽到的東西畫在紙上。",
+      ruleEn: "Close your eyes, listen, then draw what you heard on paper."
     }
   ];
 
