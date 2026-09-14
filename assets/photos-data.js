@@ -60,15 +60,17 @@
     {
       title: "STEAM 科學營",
       en: "STEAM Science Camp",
-      titleAt: { l: 6.40, t: 3.5, w: 40 },
+      titleAt: { l: 4.00, t: 4.0, w: 33 },
       deco: [
-        { kind: "beaker", l: 87.5, t: 61, w: 11, h: 20 },
-        { kind: "rocket", l: 92.5, t: 0.5, w: 7, h: 14 }
+        { kind: "beaker", l: 86.5, t: 62, w: 12, h: 22 },
+        { kind: "rocket", l: 91.5, t: 1, w: 8, h: 15 }
       ],
+      // 原本右上角那張拿掉之後版面空了一塊，三張重新排：
+      // 左邊直的一張水火箭，右邊上下兩張橫的
       shots: [
-        { src: P + "steam2.webp", alt: "小朋友動手做實驗", l: 36.69, t: 53.99, w: 49.95, h: 49.97 },
-        { src: P + "steam3.webp", alt: "科學營帶隊", l: 3.77, t: 22.73, w: 46.87, h: 46.89 },
-        { src: P + "rocket.webp", alt: "水火箭發射瞬間", l: 1.50, t: 66.50, w: 34, h: 32 }
+        { src: P + "steam3.webp", alt: "科學營帶隊", l: 38.50, t: 6.50, w: 45, h: 44.5 },
+        { src: P + "steam2.webp", alt: "小朋友動手做實驗", l: 38.50, t: 54.00, w: 45, h: 44.5 },
+        { src: P + "rocket.webp", alt: "水火箭發射瞬間", l: 2.50, t: 27.00, w: 34, h: 40 }
       ]
     },
     {
@@ -157,13 +159,14 @@
         { src: P + "outing1.webp", alt: "平溪放天燈" },
         { src: P + "outing2.webp", alt: "擎天崗大合照" },
         { src: P + "outing3.webp", alt: "草地上野餐" },
-        { src: P + "outing4.webp", alt: "蔬適 BBQ" }
+        { src: P + "outing4.webp", alt: "蔬適 BBQ" },
+        { src: P + "outing5.webp", alt: "自己包的生菜捲" }
       ]
     },
 
     kitchen: {
-      title: "這就是我們平常開伙的樣子",
-      titleEn: "This is how we cook together",
+      title: "蔬食料理社聚",
+      titleEn: "Vegetarian Cook & Eat",
       lede: "每週三 18:30，蔬食開伙，歡迎下課後來用餐。",
       ledeEn: "Vegetarian cooking every Wednesday at 18:30.",
       items: [

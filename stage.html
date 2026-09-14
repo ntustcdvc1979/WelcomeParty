@@ -216,19 +216,19 @@
   /* ---------- 照片牆那幾頁 ----------
      標題跟其他頁一樣大（不套 dense），上面留一段空白，
      標題才不會頂在畫面最上緣——照片牆會把剩下的高度全部吃掉。 */
-  .screen--wall{padding-top:7vmin;}
-  .screen--wall .lede{font-size:clamp(1rem,2.6vmin,1.8rem);max-width:44em;}
+  .screen--wall{padding-top:3vmin;}
+  .screen--wall .lede{font-size:clamp(1.15rem,3.2vmin,2.4rem);max-width:40em;}
 
   .wall{
     display:flex;flex-wrap:wrap;
     justify-content:center;align-content:center;
-    gap:.7rem;
-    width:100%;max-width:92rem;
+    gap:.5rem;
+    width:100%;max-width:96rem;
     /* 吃掉標題之後剩下的高度，不寫死。
        寫死 vh 的話，標題一加英文就把照片擠出畫面。
        basis 用 0：空間不夠時照片牆自己縮到沒有，也不會去擠文字。 */
     flex:1 1 0;min-height:0;
-    margin-top:.8rem;
+    margin-top:.4rem;
   }
   .wall figure{
     flex:0 0 auto;margin:0;
@@ -273,6 +273,8 @@
     margin-top:1vmin;
     font-size:clamp(1.2rem,3.6vmin,2.6rem);font-weight:900;
   }
+  /* 三項福利的英文要看得清楚，比預設的 .en 再大一號 */
+  .perks .t .en{font-size:.56em;margin-top:.45em;}
 
   /* ---------- 中英切換按鈕 ---------- */
   .langbtn{
@@ -379,6 +381,7 @@
   .askqr .qr{width:min(34vmin,20rem);flex:none;}
   .askqr__t{font-size:clamp(1rem,2.7vmin,1.9rem);line-height:1.6;color:var(--ink-2);}
   .askqr__t b{display:block;color:var(--ink);font-size:clamp(1.1rem,3.2vmin,2.3rem);}
+  .askqr__t b .en{font-size:.62em;margin-top:.4em;}
   .askqr__u{font-size:clamp(.75rem,1.8vmin,1.15rem);word-break:break-all;opacity:.8;}
 
   /* ---------- 結束卡：QR 卡片，排法跟迎新最後一頁一樣 ---------- */
@@ -392,7 +395,7 @@
   .ends{
     display:flex;align-items:stretch;justify-content:center;
     gap:4vmin;margin-top:2vmin;
-    width:100%;height:60vh;
+    width:100%;height:68vh;
   }
   .end{
     display:flex;flex-direction:column;align-items:center;
@@ -411,15 +414,15 @@
   /* QR 方方正正就好，不用跟著卡片一起拉高 */
   .end--qr .end__pic{flex:0 0 auto;align-self:center;}
 
-  .end--qr{flex:0 0 17%;}
-  .end--promo{flex:0 0 36%;}
-  .end--cal{flex:0 0 41%;}
+  .end--qr{flex:0 0 14%;}
+  .end--promo{flex:0 0 52%;}
+  .end--cal{flex:0 0 28%;}
 
   /* 三欄兩排，六張宣傳圖各自照原比例縮進格子裡 */
   .promo{
     flex:1 1 auto;min-height:0;
     display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-columns:repeat(4,minmax(0,1fr));
     grid-template-rows:repeat(2,minmax(0,1fr));
     gap:.55rem;width:100%;
     place-items:center;
@@ -1058,12 +1061,22 @@
     if (!pending) { layout(); }
   };
 
+  /* 社團的社服是黃色的，emoji 畫出來是紅白條紋，所以自己畫一件 */
+  var SHIRT =
+    '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true" ' +
+      'style="width:1em;height:1em;display:inline-block;vertical-align:-.12em">' +
+      '<path d="M36 14 L22 20 L10 32 L22 44 L28 39 V86 a4 4 0 0 0 4 4 h36 a4 4 0 0 0 4 -4 V39 ' +
+        'l6 5 12 -12 -12 -12 -14 -6 a14 9 0 0 1 -28 0z" fill="#F2C231" stroke="#C98A12" ' +
+        'stroke-width="3.5" stroke-linejoin="round"/>' +
+      '<path d="M36 14 a14 10 0 0 0 28 0" fill="none" stroke="#C98A12" stroke-width="3.5"/>' +
+    "</svg>";
+
   /* ---------- 社員權益 ---------- */
   VIEWS.perks = function () {
     var rows = [
       ["🍲", "免費開伙", "Free community meals"],
       ["🎟️", "優先報名活動", "First in line for events"],
-      ["👕", "免費社服", "A club shirt on us"]
+      [SHIRT, "免費社服", "A club shirt on us"]
     ];
     return '' +
       '<h1 class="huge">社員權益<span class="en">Member Benefits</span></h1>' +
@@ -1187,8 +1200,8 @@
   /* ---------- 結束卡 ---------- */
   /* 這學期的活動宣傳圖，排法照迎新最後一頁 */
   var PROMOS = [
-    "donut", "boardgamenight", "mt_cleanup",
-    "midmoon", "teaparty", "tiramisu"
+    "orientcamp", "punchneedle", "rathero", "aromastone",
+    "donut", "tiramisu", "midmoon"
   ];
 
   VIEWS.outro = function () {
