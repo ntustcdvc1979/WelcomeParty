@@ -197,10 +197,16 @@
     font-size:clamp(1.5rem,4.9vw,5.6rem);
   }
   .collage h1 .en{white-space:normal;}
+  /* 英文接在中文後面排成一行，標題區塊就不會往下長到壓住照片 */
+  .collage h1.ctitle--inline .en{
+    display:inline;white-space:nowrap;
+    font-size:.4em;margin:0 0 0 .6em;vertical-align:.12em;
+  }
   /* 綁容器寬度而不是高度：接到 4:3 投影機時，標題才不會相對變寬去壓到照片 */
   @supports (container-type:inline-size){
     .collage{container-type:inline-size;}
     .collage h1{font-size:5cqw;}
+    .collage h1.ctitle--big{font-size:9cqw;}
   }
 
   /* ---------- 內容多的頁面 ----------
@@ -222,6 +228,12 @@
      標題跟其他頁一樣大（不套 dense），上面留一段空白，
      標題才不會頂在畫面最上緣——照片牆會把剩下的高度全部吃掉。 */
   .screen--wall{padding-top:1.5vmin;}
+  .wallhead{
+    display:flex;align-items:center;justify-content:center;
+    flex-wrap:wrap;gap:1vmin 3vmin;
+    width:100%;
+  }
+  .wallhead .lede{text-align:left;max-width:26em;}
   /* 英文接在中文後面，不另起一行——那一行的高度直接還給照片 */
   .screen--wall .big .en{
     display:inline;font-size:.4em;margin:0 0 0 .6em;vertical-align:.12em;
@@ -424,18 +436,18 @@
   /* QR 方方正正就好，不用跟著卡片一起拉高 */
   .end--qr .end__pic{flex:0 0 auto;align-self:center;}
 
-  .end--qr{flex:0 0 38%;}
-  .end--cal{flex:0 0 40%;}
+  .end--promo{flex:0 0 44%;}
+  .end--qr{flex:0 0 17%;}
+  .end--cal{flex:0 0 28%;}
 
   /* 近期活動：三欄兩排，六張各自照原比例縮進格子裡 */
   .promowall{
-    flex:1 1 0;min-height:0;
+    flex:1 1 auto;min-height:0;
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
     grid-template-rows:repeat(2,minmax(0,1fr));
-    gap:1.4vmin;width:100%;max-width:96rem;
+    gap:.8vmin;width:100%;
     place-items:center;
-    margin-top:.6rem;
   }
   .promowall img{
     max-width:100%;max-height:100%;width:auto;height:auto;display:block;
@@ -533,6 +545,8 @@
   var MONKEY = window.CDVC_MONKEYS;
   var TEACHERS = (window.CDVC_TEACHERS || {}).TEACHERS || [];
   var CLUB = (window.CDVC_PHOTOS || {}).CLUB || [];
+  var INTRO = (window.CDVC_PHOTOS || {}).INTRO || null;
+  var OUTING = (window.CDVC_PHOTOS || {}).OUTING || null;
   var WALLS = (window.CDVC_PHOTOS || {}).WALLS || {};
 
   var $ = function (id) { return document.getElementById(id); };
@@ -752,18 +766,18 @@
   add({ part: "monkey", kind: "monkeyRules", label: "三隻猴子 規則・比劃猴掃 QR" });
   add({ part: "monkey", kind: "monkeyPlay", label: "★ 三隻猴子 進行中" });
 
-  // 社團介紹 → 賑災 → 國外交流 → 開伙 → 指導老師
+  // 活動介紹 → 社團介紹 → 賑災 → 海外交流 → 社遊 → 開伙 → 指導老師
+  if (INTRO) { add({ part: "club", kind: "club", collage: INTRO, label: "活動介紹 開場" }); }
   CLUB.forEach(function (c, n) {
     add({ part: "club", kind: "club", ci: n, label: "社團介紹　" + c.title });
   });
   add({ part: "relief", kind: "wall", set: "relief", label: "★ 賑災現場" });
   add({ part: "global", kind: "wall", set: "global", label: "★ 海外交流" });
-  add({ part: "outing", kind: "wall", set: "outing", label: "★ 社遊" });
+  add({ part: "outing", kind: "club", collage: OUTING, label: "★ 社遊" });
   add({ part: "kitchen", kind: "wall", set: "kitchen", label: "★ 開伙的樣子" });
 
   add({ part: "perks", kind: "perks", label: "社員權益" });
-  add({ part: "promo", kind: "promo", label: "★ 近期活動" });
-  add({ part: "promo", kind: "outro", label: "★ 這學期的活動・傳送門 QR" });
+  add({ part: "promo", kind: "outro", label: "★ 這學期的活動・近期活動＋傳送門＋行事曆" });
 
   add({ part: "teacher", kind: "teacherTitle", label: "指導老師介紹 標題" });
   TEACHERS.forEach(function (t, n) {
@@ -970,7 +984,7 @@
 
   /* ---------- 社團介紹 ---------- */
   VIEWS.club = function (sc) {
-    var c = CLUB[sc.ci] || { shots: [], titleAt: {} };
+    var c = sc.collage || CLUB[sc.ci] || { shots: [], titleAt: {} };
     var t = c.titleAt || {};
 
     function box(d) {
@@ -985,7 +999,7 @@
         return '<img src="' + esc(s.src) + '" alt="' + esc(s.alt || "") + '" ' +
           'onerror="this.remove()" style="' + box(s) + '">';
       }).join("") +
-      '<h1 style="' +
+      '<h1 class="' + (c.big ? "ctitle--big " : "") + (c.inlineEn ? "ctitle--inline" : "") + '" style="' +
         "left:" + (t.l || 0) + "%;top:" + (t.t || 0) + "%;width:" + (t.w || 100) + "%;" +
         "text-align:" + (c.align === "center" ? "center" : "left") +
       '">' + bi(c.title, c.en) + "</h1>" +
@@ -1004,10 +1018,11 @@
 
     return '' +
       (set.eyebrow ? '<p class="eyebrow">' + bi(set.eyebrow, set.eyebrowEn) + "</p>" : "") +
-      '<h1 class="big">' + bi(set.title || "", set.titleEn) + "</h1>" +
-      (set.lede
-        ? '<p class="lede" style="margin-top:.6rem">' + biHtml(set.lede, set.ledeEn) + "</p>"
-        : "") +
+      // 標題和說明排成一列，不要上下疊——疊起來吃掉的高度就是照片想要的
+      '<div class="wallhead">' +
+        '<h1 class="big">' + bi(set.title || "", set.titleEn) + "</h1>" +
+        (set.lede ? '<p class="lede">' + biHtml(set.lede, set.ledeEn) + "</p>" : "") +
+      "</div>" +
       '<div class="wall" id="wall" data-per-row="' + (set.perRow || 0) + '">' +
         items.map(function (ph, n) {
           // perRow 有指定的話，每 perRow 張插一個撐滿寬度的空元素把列斷開，
@@ -1282,6 +1297,14 @@
         "</div>" +
       "</div>" +
       '<div class="ends">' +
+        '<div class="end end--promo">' +
+          '<div class="promowall">' +
+            PROMOS.map(function (n) {
+              return '<img src="assets/' + n + '.webp" alt="近期活動" onerror="this.remove()">';
+            }).join("") +
+          "</div>" +
+          '<div class="end__title">近期活動<small>Coming up</small></div>' +
+        "</div>" +
         (qr
           ? '<div class="end end--qr">' +
               '<div class="end__pic"><div class="qr">' + qr + "</div></div>" +

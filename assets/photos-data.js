@@ -24,6 +24,42 @@
 
   var P = "media/photos/";
 
+  /* ---------- 開場：活動介紹 ----------
+     大標題放中間，各種活動的照片散在四周當裝飾 */
+  var INTRO = {
+    title: "活動介紹",
+    en: "What We Do",
+    align: "center",
+    big: true,
+    titleAt: { l: 0, t: 37, w: 100 },
+    shots: [
+      { src: P + "eco2.webp", alt: "淨灘", l: 1.0, t: 2.5, w: 18, h: 26 },
+      { src: P + "steam2.webp", alt: "科學營", l: 21.0, t: -1.0, w: 17, h: 24 },
+      { src: P + "life1.webp", alt: "生命教育", l: 62.0, t: 0.5, w: 18, h: 26 },
+      { src: P + "relief1.webp", alt: "賑災", l: 81.0, t: 6.0, w: 18, h: 25 },
+      { src: P + "a0.webp", alt: "開伙", l: 2.0, t: 71.0, w: 18, h: 26 },
+      { src: P + "craft1.webp", alt: "手作社課", l: 22.0, t: 76.0, w: 17, h: 24 },
+      { src: P + "outing2.webp", alt: "社遊", l: 61.0, t: 74.0, w: 18, h: 25 },
+      { src: P + "08.webp", alt: "海外交流", l: 80.0, t: 68.0, w: 18, h: 26 }
+    ]
+  };
+
+  /* ---------- 社遊（排版照附件那張） ---------- */
+  var OUTING = {
+    title: "社遊",
+    en: "Club Outings",
+    align: "center",
+    inlineEn: true,
+    titleAt: { l: 0, t: 1.0, w: 100 },
+    shots: [
+      { src: P + "outing1.webp", alt: "平溪放天燈", l: 1.6, t: 6.5, w: 30.7, h: 44.0 },
+      { src: P + "outing2.webp", alt: "擎天崗大合照", l: 33.9, t: 15.0, w: 35.4, h: 44.3 },
+      { src: P + "outing4.webp", alt: "蔬適 BBQ", l: 70.8, t: 6.0, w: 27.6, h: 53.2 },
+      { src: P + "outing5.webp", alt: "自己包的生菜捲", l: 14.8, t: 60.2, w: 36.5, h: 38.9 },
+      { src: P + "outing3.webp", alt: "草地上野餐", l: 58.9, t: 61.6, w: 34.9, h: 37.0 }
+    ]
+  };
+
   /* ---------- 社團介紹（照 pptx 的排版） ---------- */
   var CLUB = [
     {
@@ -92,9 +128,10 @@
       title: "紓壓手做",
       en: "Crafts to Unwind",
       titleAt: { l: 1.65, t: 1.16, w: 29 },
+      // 花原本在 t:14，剛好卡在英文小標那一行上，往下挪開
       deco: [
-        { kind: "flower", l: 2.5, t: 14, w: 11, h: 20 },
-        { kind: "pompom", l: 3.5, t: 62, w: 10, h: 18 },
+        { kind: "flower", l: 2.5, t: 25, w: 11, h: 20 },
+        { kind: "pompom", l: 3.5, t: 64, w: 10, h: 18 },
         { kind: "flower", l: 91.5, t: 74, w: 8, h: 15 }
       ],
       // 原稿四張疊得很緊，這裡拉開留出間隔，每一張才看得完整
@@ -152,20 +189,6 @@
       ]
     },
 
-    /* 社遊：pptx 裡本來是兩頁九張，這裡挑四張代表性的併成一頁 */
-    outing: {
-      title: "社遊",
-      titleEn: "Club Outings",
-      perRow: 3,
-      items: [
-        { src: P + "outing1.webp", alt: "平溪放天燈" },
-        { src: P + "outing2.webp", alt: "擎天崗大合照" },
-        { src: P + "outing3.webp", alt: "草地上野餐" },
-        { src: P + "outing4.webp", alt: "蔬適 BBQ" },
-        { src: P + "outing5.webp", alt: "自己包的生菜捲" }
-      ]
-    },
-
     kitchen: {
       perRow: 3,
       title: "蔬食料理社聚",
@@ -183,5 +206,5 @@
     }
   };
 
-  global.CDVC_PHOTOS = { CLUB: CLUB, WALLS: WALLS };
+  global.CDVC_PHOTOS = { INTRO: INTRO, CLUB: CLUB, OUTING: OUTING, WALLS: WALLS };
 })(window);
