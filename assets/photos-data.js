@@ -52,7 +52,7 @@
     titleAt: { l: 0, t: 0.5, w: 100 },
     shots: [
       { src: P + "outing1.webp", alt: "平溪放天燈", l: 1.6, t: 6.5, w: 30.7, h: 44.0 },
-      { src: P + "outing2.webp", alt: "擎天崗大合照", l: 33.9, t: 19.0, w: 35.4, h: 40.3 },
+      { src: P + "outing2.webp", alt: "擎天崗大合照", l: 33.9, t: 21.5, w: 35.4, h: 37.8 },
       { src: P + "outing4.webp", alt: "蔬適 BBQ", l: 70.8, t: 6.0, w: 27.6, h: 53.2 },
       { src: P + "outing5.webp", alt: "自己包的生菜捲", l: 14.8, t: 60.2, w: 36.5, h: 38.9 },
       { src: P + "outing3.webp", alt: "草地上野餐", l: 58.9, t: 61.6, w: 34.9, h: 37.0 }
@@ -182,6 +182,11 @@
 
     global: {
       perRow: 3,
+      // 照片牆的裝飾是貼在整個畫面上的，座標是畫面的百分比
+      deco: [
+        { kind: "plane", l: 2, t: 4, w: 17, h: 20 },
+        { kind: "palm", l: 84, t: 1, w: 14, h: 30 }
+      ],
       title: "海外交流・開拓視野",
       titleEn: "Overseas Exchange",
       items: [

@@ -15,12 +15,22 @@
     display:flex;
     flex-direction:column;
   }
+  /* 背景：四角壓上社團色，中間留亮，字才讀得動。
+     再疊一層很淡的圓點，投出來不會是一片死板的米色。 */
   body::before{
     content:"";position:fixed;inset:0;z-index:0;
     background:
-      radial-gradient(58rem 34rem at 10% -10%, rgba(242,167,44,.22), transparent 62%),
-      radial-gradient(52rem 32rem at 92% 4%, rgba(169,206,59,.24), transparent 62%),
-      radial-gradient(46rem 30rem at 50% 112%, rgba(14,140,143,.14), transparent 60%);
+      radial-gradient(44rem 28rem at 6% -8%,   rgba(242,167,44,.45), transparent 62%),
+      radial-gradient(40rem 26rem at 96% 0%,   rgba(169,206,59,.45), transparent 62%),
+      radial-gradient(34rem 24rem at 102% 72%, rgba(14,140,143,.30), transparent 62%),
+      radial-gradient(36rem 24rem at -4% 82%,  rgba(226,98,28,.28), transparent 62%),
+      radial-gradient(52rem 30rem at 50% 112%, rgba(233,163,23,.32), transparent 62%),
+      linear-gradient(158deg, #FFFAEB 0%, #FDF2D8 46%, #FAE7C2 100%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(rgba(226,98,28,.14) 1.5px, transparent 1.6px);
+    background-size:28px 28px;
   }
 
   /* ---------- 畫面 ---------- */
@@ -172,6 +182,13 @@
     border-radius:.4rem;
     box-shadow:0 .5vmin 1.4vmin rgba(64,38,15,.24);
   }
+  /* 照片牆那幾頁的裝飾：貼在整個畫面上，不跟著內容排 */
+  .deco--page{
+    position:absolute;z-index:0;
+    display:block;opacity:.85;pointer-events:none;
+  }
+  .deco--page svg{display:block;width:100%;height:100%;}
+
   /* 裝飾畫在照片後面，從縫隙露出來 */
   .collage .deco{
     position:absolute;
@@ -412,9 +429,16 @@
     border:.35vmin solid var(--paper-3);
     text-align:left;
   }
-  .askqr .qr{width:min(34vmin,20rem);flex:none;}
+  .askqr .qr{width:min(44vmin,26rem);flex:none;}
   .askqr--big .qr{width:min(46vmin,28rem);}
   .askqr .qr img{display:block;width:100%;height:auto;}
+  /* 心得回饋那頁只有標題和 QR，所以放到最大 */
+  .qr--solo{
+    width:min(54vmin,34rem);
+    background:#fff;border-radius:1rem;padding:1.2vmin;
+    box-shadow:0 .6vmin 1.8vmin rgba(90,52,18,.24);
+  }
+  .qr--solo img{display:block;width:100%;height:auto;}
   .askqr__t{font-size:clamp(1rem,2.7vmin,1.9rem);line-height:1.6;color:var(--ink-2);}
   .askqr__t b{display:block;color:var(--ink);font-size:clamp(1.1rem,3.2vmin,2.3rem);}
   .askqr__t b .en{font-size:.62em;margin-top:.4em;}
@@ -744,6 +768,40 @@
         "</g>" +
       "</svg>",
 
+    plane:
+      '<svg viewBox="0 0 120 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        // 虛線航跡
+        '<path d="M4 84 q26 -18 54 -30 t58 -30" fill="none" stroke="#0E8C8F" ' +
+          'stroke-width="4" stroke-linecap="round" stroke-dasharray="3 12" opacity=".65"/>' +
+        '<g transform="rotate(-22 70 40)">' +
+          '<path d="M34 40 q28 -9 58 -6 q10 1 14 6 q-4 5 -14 6 q-30 3 -58 -6z" fill="#FFFCF2" ' +
+            'stroke="#2F6FD0" stroke-width="3.5" stroke-linejoin="round"/>' +
+          '<path d="M56 38 l-10 -22 h9 l18 21z" fill="#2F6FD0"/>' +
+          '<path d="M56 42 l-10 22 h9 l18 -21z" fill="#2F6FD0" opacity=".8"/>' +
+          '<path d="M36 40 l-14 -12 h8 l14 10z" fill="#E2621C"/>' +
+          '<circle cx="86" cy="40" r="3.2" fill="#2F6FD0"/>' +
+        "</g>" +
+      "</svg>",
+
+    palm:
+      '<svg viewBox="0 0 100 110" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
+        '<path d="M52 104 q-6 -34 -4 -56" fill="none" stroke="#8A5A2B" ' +
+          'stroke-width="8" stroke-linecap="round"/>' +
+        '<g fill="#82A821">' +
+          '<path d="M48 48 q-24 -14 -40 -4 q18 -2 38 12z"/>' +
+          '<path d="M48 48 q24 -16 42 -6 q-20 -1 -40 13z"/>' +
+        "</g>" +
+        '<g fill="#A9CE3B">' +
+          '<path d="M48 48 q-16 -26 -34 -26 q16 6 31 30z"/>' +
+          '<path d="M48 48 q14 -28 34 -26 q-18 5 -31 31z"/>' +
+          '<path d="M48 46 q2 -22 -2 -30 q10 12 7 31z"/>' +
+        "</g>" +
+        '<g fill="#8A5A2B">' +
+          '<circle cx="42" cy="52" r="5"/><circle cx="54" cy="53" r="5"/>' +
+          '<circle cx="48" cy="60" r="5"/>' +
+        "</g>" +
+      "</svg>",
+
     paw:
       '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">' +
         '<g fill="#A9713C">' +
@@ -866,11 +924,6 @@
 
   add({ part: "perks", kind: "perks", label: "社員權益" });
   add({ part: "promo", kind: "outro", label: "★ 這學期的活動・近期活動＋傳送門＋行事曆" });
-
-  add({ part: "teacher", kind: "teacherTitle", label: "指導老師介紹 標題" });
-  TEACHERS.forEach(function (t, n) {
-    add({ part: "teacher", kind: "teacher", ti: n, label: "老師　" + t.name });
-  });
 
   add({ part: "feedback", kind: "feedback", label: "心得回饋 QR" });
 
@@ -1111,6 +1164,10 @@
     }
 
     return '' +
+      (set.deco || []).map(function (d) {
+        return '<span class="deco deco--page" style="left:' + d.l + "%;top:" + d.t +
+          "%;width:" + d.w + "%;height:" + d.h + '%">' + (DECO[d.kind] || "") + "</span>";
+      }).join("") +
       (set.eyebrow ? '<p class="eyebrow">' + bi(set.eyebrow, set.eyebrowEn) + "</p>" : "") +
       // 標題和說明排成一列，不要上下疊——疊起來吃掉的高度就是照片想要的
       '<div class="wallhead">' +
@@ -1314,15 +1371,8 @@
   VIEWS.feedback = function () {
     return '' +
       '<h1 class="huge">心得回饋<span class="en">Tell us how it went</span></h1>' +
-      '<div class="askqr askqr--big">' +
-        '<div class="qr">' +
-          '<img src="assets/feedback-qr.webp" alt="心得回饋表單 QR code" onerror="this.remove()">' +
-        "</div>" +
-        '<div class="askqr__t"><b>' +
-          bi("掃這裡填回饋", "Scan to fill in the form") + "</b>" +
-          biHtml("兩分鐘就好，寫什麼都可以。<br>你的一句話會決定下次辦什麼。",
-                 "Two minutes. Anything you write helps us plan the next one.") +
-        "</div>" +
+      '<div class="qr qr--solo">' +
+        '<img src="assets/feedback-qr.webp" alt="心得回饋表單 QR code" onerror="this.remove()">' +
       "</div>";
   };
 
